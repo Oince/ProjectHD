@@ -5,26 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4a84b8ef-e2b0-4c27-9897-cf166708c0ca" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectHD/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectHD/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectHD/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectHD/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectHD/gradlew" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectHD/gradlew.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectHD/settings.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectHD/src/main/java/oince/projecthd/ProjectHdApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectHD/src/main/java/oince/projecthd/controller/TestController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectHD/src/main/java/oince/projecthd/domain/Board.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectHD/src/main/java/oince/projecthd/domain/CategoryName.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectHD/src/main/java/oince/projecthd/domain/Comment.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectHD/src/main/java/oince/projecthd/domain/Member.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectHD/src/main/java/oince/projecthd/domain/ThumbsupTable.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectHD/src/main/java/oince/projecthd/mapper/TestMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectHD/src/main/resources/application.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectHD/src/main/resources/mappers/TestMapper.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectHD/src/test/java/oince/projecthd/ProjectHdApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectHD/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectHD/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectHD/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectHD/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectHD/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectHD/gradlew.bat" beforeDir="false" afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectHD/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectHD/src/main/java/oince/projecthd/ProjectHdApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/oince/projecthd/ProjectHdApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectHD/src/main/java/oince/projecthd/controller/TestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/oince/projecthd/controller/TestController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectHD/src/main/java/oince/projecthd/domain/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/oince/projecthd/domain/Board.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectHD/src/main/java/oince/projecthd/domain/CategoryName.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/oince/projecthd/domain/CategoryName.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectHD/src/main/java/oince/projecthd/domain/Comment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/oince/projecthd/domain/Comment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectHD/src/main/java/oince/projecthd/domain/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/oince/projecthd/domain/Member.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectHD/src/main/java/oince/projecthd/domain/ThumbsupTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/oince/projecthd/domain/ThumbsupTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectHD/src/main/java/oince/projecthd/mapper/TestMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/oince/projecthd/mapper/TestMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectHD/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectHD/src/main/resources/mappers/TestMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mappers/TestMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectHD/src/test/java/oince/projecthd/ProjectHdApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/oince/projecthd/ProjectHdApplicationTests.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/명세서.md" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../명세서.md" beforeDir="false" />
     </list>
@@ -122,11 +121,22 @@
       <workItem from="1727862797342" duration="270000" />
       <workItem from="1727863077994" duration="11000" />
       <workItem from="1727863404529" duration="599000" />
-      <workItem from="1727867143120" duration="27000" />
+      <workItem from="1727867143120" duration="451000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
