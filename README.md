@@ -2,6 +2,10 @@
 
 잘 이해가 안되거나 이상한거 있으면 말해주세요~
 
+- 24/10/05
+  - POST /logout api 추가
+  - /signup, /login 요청 데이터 제약사항 추가
+
 - 24/10/01 최초 작성
 
 ## 기능
@@ -70,10 +74,13 @@
 - req
   - loginId: string
     - 로그인에 사용할 id
+    - 최소 5글자, 최대 30글자
   - password: string
     - 비밀번호
+    - 최소 5글자, 최대 30글자
   - name: string
     - 닉네임
+    - 최소 2글자, 최대 20글자
 - res: 없음
 
 ### POST /login
@@ -82,7 +89,9 @@
 
 - req
   - loginId: string
+    - 최소 5글자, 최대 30글자
   - password: string
+    - 최소 5글자, 최대 30글자
 - res
   - 세션 쿠키
     - 이름: JSESSIONID
@@ -91,6 +100,13 @@
   - memberId 쿠키
     - 이름: memberId
     - 로그인한 사용자의 식별 id
+
+### POST /logout
+
+로그아웃
+
+- req: 없음
+- res: 없음
 
 ### GET /{boardId}
 
@@ -217,7 +233,7 @@
 create table member (
 	member_id 		int primary key auto_increment not null,
     login_id 		varchar(30) unique  not null,
-    password 		varchar(20) not null,
+    password 		varchar(30) not null,
     name			varchar(20) not null
 );
 
