@@ -16,20 +16,33 @@ public class MemberService {
     private final MemberMapper memberMapper;
 
     @Transactional
-    public String signup(String loginId, String password, String name) {
+    public String signup(Member newMember) {
 
-        if (isDuplicateLoginId(loginId)) {
+        Member findMember = memberMapper.findByLoginId(newMember.getLoginId());
+        if (findMember != null) {
             return "duplicate";
         }
 
-        Member member = new Member(null, loginId, password, name);
-        memberMapper.addNewMember(member);
-        log.info("member.memberId={}", member.getMemberId());
+        memberMapper.addNewMember(newMember);
+        log.info("new member={}", newMember);
+
         return "ok";
     }
 
-    private boolean isDuplicateLoginId(String loginId) {
-        Member findMember = memberMapper.findByLoginId(loginId);
-        return findMember != null;
+    public Member login(String loginId, String password) {
+        Member member = memberMapper.findByLoginId(loginId);
+        if (member == null || !member.getPassword().equals(password)) {
+            return null;
+        }
+        return member;
     }
+
+    public Member findById(int id) {
+        return memberMapper.findById(id);
+    }
+
+    public Member findByLoginId(String loginId) {
+        return memberMapper.findByLoginId(loginId);
+    }
+
 }

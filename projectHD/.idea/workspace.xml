@@ -5,16 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4a84b8ef-e2b0-4c27-9897-cf166708c0ca" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/oince/projecthd/controller/MemberController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/oince/projecthd/controller/form/SignupDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/oince/projecthd/mapper/MemberMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/oince/projecthd/service/MemberService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/mappers/memberMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/oince/projecthd/controller/form/LoginDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/oince/projecthd/service/MemberServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/oince/projecthd/controller/TestController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/oince/projecthd/mapper/TestMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/mappers/TestMapper.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/oince/projecthd/controller/MemberController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/oince/projecthd/controller/MemberController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/oince/projecthd/service/MemberService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/oince/projecthd/service/MemberService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/mappers/memberMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mappers/memberMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,6 +31,7 @@
         <option value="spring-beans.schema" />
         <option value="HTTP Request" />
         <option value="Class" />
+        <option value="JUnit5 Test Class" />
       </list>
     </option>
   </component>
@@ -48,11 +46,18 @@
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Gradle.MemberServiceTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.MemberServiceTest.signup.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.projectHD 빌드.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.MemberServiceTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.MemberServiceTest.login.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.MemberServiceTest.signup.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.MemberServiceTest.signupFail.executor&quot;: &quot;Run&quot;,
     &quot;Notification.DisplayName-DoNotAsk-Database detector&quot;: &quot;데이터베이스 탐지기&quot;,
     &quot;Notification.DoNotAsk-Database detector&quot;: &quot;true&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
@@ -61,6 +66,8 @@
     &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;Spring Boot.ProjectHdApplication.executor&quot;: &quot;Run&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
     &quot;git-widget-placeholder&quot;: &quot;server&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
@@ -70,7 +77,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.IDE.editor.colors.XML&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -84,8 +91,101 @@
       <recent name="C:\Users\허원재\project\projectHD\projectHD\src\main\resources" />
       <recent name="C:\Users\허원재\project\projectHD\projectHD\src\main\resources\mybatis" />
     </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="oince.projecthd.service" />
+    </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Spring Boot.ProjectHdApplication">
+    <configuration name="MemberServiceTest.signup" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;oince.projecthd.service.MemberServiceTest.signup&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="MemberServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="projectHD.test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="oince.projecthd.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="oince.projecthd.service" />
+      <option name="MAIN_CLASS_NAME" value="oince.projecthd.service.MemberServiceTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MemberServiceTest.login" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="projectHD.test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="oince.projecthd.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="oince.projecthd.service" />
+      <option name="MAIN_CLASS_NAME" value="oince.projecthd.service.MemberServiceTest" />
+      <option name="METHOD_NAME" value="login" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MemberServiceTest.signup" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="projectHD.test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="oince.projecthd.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="oince.projecthd.service" />
+      <option name="MAIN_CLASS_NAME" value="oince.projecthd.service.MemberServiceTest" />
+      <option name="METHOD_NAME" value="signup" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MemberServiceTest.signupFail" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="projectHD.test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="oince.projecthd.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="oince.projecthd.service" />
+      <option name="MAIN_CLASS_NAME" value="oince.projecthd.service.MemberServiceTest" />
+      <option name="METHOD_NAME" value="signupFail" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="ProjectHdApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="projectHD.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="oince.projecthd.ProjectHdApplication" />
@@ -93,6 +193,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.MemberServiceTest" />
+        <item itemvalue="JUnit.MemberServiceTest.login" />
+        <item itemvalue="JUnit.MemberServiceTest.signupFail" />
+        <item itemvalue="JUnit.MemberServiceTest.signup" />
+        <item itemvalue="Gradle.MemberServiceTest.signup" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -121,6 +230,10 @@
       <workItem from="1727867143120" duration="451000" />
       <workItem from="1728051608366" duration="5401000" />
       <workItem from="1728063881889" duration="779000" />
+      <workItem from="1728113841228" duration="6290000" />
+      <workItem from="1728126213719" duration="5182000" />
+      <workItem from="1728134174865" duration="511000" />
+      <workItem from="1728134702171" duration="1051000" />
     </task>
     <servers />
   </component>

@@ -5,7 +5,7 @@
         select * from member where member_id=#{id}
     </select>
     <select id="findByLoginId" resultType="oince.projecthd.domain.Member">
-        select * from member where member_id=#{loginId}
+        select * from member where login_id=#{loginId}
     </select>
     <insert id="addNewMember" parameterType="oince.projecthd.domain.Member" useGeneratedKeys="true" keyProperty="memberId">
         insert into member(login_id, password, name) values(#{loginId}, #{password}, #{name})
