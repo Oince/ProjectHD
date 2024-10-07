@@ -25,7 +25,6 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> postSignup(@Valid @RequestBody SignupDto signupDto, BindingResult bindingResult) {
-
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().build();
         }
@@ -36,6 +35,7 @@ public class MemberController {
         if (code.equals("duplicate")) {
             return ResponseEntity.badRequest().build();
         }
+        log.info("new member={}", newMember);
         return ResponseEntity.ok().build();
     }
 

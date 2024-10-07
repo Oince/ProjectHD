@@ -2,6 +2,10 @@
 
 잘 이해가 안되거나 이상한거 있으면 말해주세요~
 
+- 24/10/07
+  - 화면 구성 추가
+    - /edit/{boardId}, /signup
+
 - 24/10/05
   - POST /logout api 추가
   - /signup, /login 요청 데이터 제약사항 추가
@@ -27,45 +31,19 @@
 ## 화면 구성
 
 - 메인페이지
-  - 게시글이 바로 보임
+  - /
+  
 - 게시글 하나의 페이지
+  - /{boardId}
 
+- 게시글 수정 페이지
+  - /edit/{boardId}
+
+- 회원가입 페이지
+  - /signup
 
 
 ## API
-
-### GET /
-
-홈화면
-
-### GET /boards
-
-홈화면에 표시할 게시글 정보
-
-- req: 없음
-
-- res
-  - boardId: int
-    - 게시글 id
-  - memberId: int
-    - 게시글 작성자 식별 id
-  - writer: string
-    - 게시글 작성자 닉네임
-  - title: string
-    - 제목
-  - numberOfComment: int
-    - 댓글 개수
-  - price: int
-    - 가격
-  - deliveryPrice: int
-    - 배달비
-  - category: string
-    - 카테고리
-  - date: string
-    - 게시글 생성 날짜
-  - thumbsup: int
-    - 따봉 개수
-  - 리스트 형태
 
 ### POST /signup
 
@@ -108,9 +86,34 @@
 - req: 없음
 - res: 없음
 
-### GET /{boardId}
+### GET /boards
 
-게시글 화면
+홈화면에 표시할 게시글 정보
+
+- req: 없음
+
+- res
+  - boardId: int
+    - 게시글 id
+  - memberId: int
+    - 게시글 작성자 식별 id
+  - writer: string
+    - 게시글 작성자 닉네임
+  - title: string
+    - 제목
+  - numberOfComment: int
+    - 댓글 개수
+  - price: int
+    - 가격
+  - deliveryPrice: int
+    - 배달비
+  - category: string
+    - 카테고리
+  - date: string
+    - 게시글 생성 날짜
+  - thumbsup: int
+    - 따봉 개수
+  - 리스트 형태
 
 ### GET /board/{boardId}
 

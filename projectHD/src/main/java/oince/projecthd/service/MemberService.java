@@ -24,7 +24,6 @@ public class MemberService {
         }
 
         memberMapper.addNewMember(newMember);
-        log.info("new member={}", newMember);
 
         return "ok";
     }
