@@ -48,9 +48,10 @@ class MemberServiceTest {
     void login() {
         Member member = memberService.login("test1", "test1");
 
+        assertThat(member).isNotNull();
         assertThat(member.getLoginId()).isEqualTo("test1");
         assertThat(member.getPassword()).isEqualTo("test1");
-        assertThat(member.getName()).isEqualTo("asdf");
+        assertThat(member.getName()).isEqualTo("name");
     }
 
     @Test

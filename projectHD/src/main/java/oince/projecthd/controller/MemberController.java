@@ -1,13 +1,12 @@
 package oince.projecthd.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oince.projecthd.controller.form.LoginDto;
-import oince.projecthd.controller.form.SignupDto;
+import oince.projecthd.controller.dto.LoginDto;
+import oince.projecthd.controller.dto.SignupDto;
 import oince.projecthd.domain.Member;
 import oince.projecthd.service.MemberService;
 import org.springframework.http.ResponseEntity;
