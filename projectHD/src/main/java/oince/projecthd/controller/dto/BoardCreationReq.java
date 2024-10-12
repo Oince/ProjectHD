@@ -9,7 +9,7 @@ import oince.projecthd.domain.CategoryName;
 
 @Data
 @AllArgsConstructor
-public class BoardCreationDto {
+public class BoardCreationReq {
 
     @NotBlank
     @Size(max = 100)

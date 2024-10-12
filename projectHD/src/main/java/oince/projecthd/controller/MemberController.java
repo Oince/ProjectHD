@@ -5,8 +5,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oince.projecthd.controller.dto.LoginDto;
-import oince.projecthd.controller.dto.SignupDto;
+import oince.projecthd.controller.dto.LoginReq;
+import oince.projecthd.controller.dto.SignupReq;
 import oince.projecthd.domain.Member;
 import oince.projecthd.service.MemberService;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +23,12 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> postSignup(@Valid @RequestBody SignupDto signupDto, BindingResult bindingResult) {
+    public ResponseEntity<?> postSignup(@Valid @RequestBody SignupReq signupReq, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().build();
         }
 
-        Member newMember = new Member(null, signupDto.getLoginId(), signupDto.getPassword(), signupDto.getName());
+        Member newMember = new Member(null, signupReq.getLoginId(), signupReq.getPassword(), signupReq.getName());
         String code = memberService.signup(newMember);
 
         if (code.equals("duplicate")) {
@@ -39,9 +39,9 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> postLogin(@Valid @RequestBody LoginDto loginDto, HttpServletRequest request) {
+    public ResponseEntity<?> postLogin(@Valid @RequestBody LoginReq loginReq, HttpServletRequest request) {
 
-        Member member = memberService.login(loginDto.getLoginId(), loginDto.getPassword());
+        Member member = memberService.login(loginReq.getLoginId(), loginReq.getPassword());
         if (member == null) {
             return ResponseEntity.badRequest().build();
         } else {

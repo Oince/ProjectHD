@@ -9,4 +9,6 @@ public interface BoardMapper {
     void addNewBoard(Board board);
 
     Board findById(int boardId);
+
+    void viewsCount(int boardId);
 }
