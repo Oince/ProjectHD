@@ -3,8 +3,8 @@ package oince.projecthd.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oince.projecthd.controller.dto.BoardCreationReq;
-import oince.projecthd.controller.dto.BoardRes;
+import oince.projecthd.controller.dto.BoardCreationDto;
+import oince.projecthd.controller.dto.BoardDto;
 import oince.projecthd.domain.Board;
 import oince.projecthd.domain.Member;
 import oince.projecthd.service.BoardService;
@@ -25,13 +25,13 @@ public class BoardController {
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity<?> postBoards(@Valid @RequestBody BoardCreationReq boardCreationReq,
+    public ResponseEntity<?> postBoards(@Valid @RequestBody BoardCreationDto boardCreationDto,
                                        @SessionAttribute(name = "loginMember", required = false) Member loginMember) {
         if (loginMember == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Board board = new Board(boardCreationReq, loginMember.getMemberId());
+        Board board = new Board(boardCreationDto, loginMember.getMemberId());
         boardService.addBoard(board);
 
         return ResponseEntity.created(URI.create("/boards/" + board.getBoardId())).build();
@@ -39,16 +39,16 @@ public class BoardController {
     }
 
     @GetMapping("/{boardId}")
-    public ResponseEntity<BoardRes> getBoard(@PathVariable Integer boardId) {
+    public ResponseEntity<BoardDto> getBoard(@PathVariable Integer boardId) {
         Board board = boardService.getBoard(boardId);
         if(board == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         Member writer = memberService.findById(board.getMemberId());
-        int commentCount = boardService.getCountOfComment(boardId);
+        int numberOfComment = boardService.getNumberOfComment(boardId);
 
-        BoardRes res = new BoardRes(board, writer.getName(), commentCount);
+        BoardDto res = new BoardDto(board, writer.getName(), numberOfComment);
         return ResponseEntity.ok(res);
     }
 }

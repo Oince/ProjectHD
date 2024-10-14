@@ -10,5 +10,5 @@ public interface BoardMapper {
 
     Board findById(int boardId);
 
-    void viewsCount(int boardId);
+    void increaseViews(int boardId);
 }

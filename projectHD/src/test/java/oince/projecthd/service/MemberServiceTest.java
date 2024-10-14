@@ -1,5 +1,6 @@
 package oince.projecthd.service;
 
+import oince.projecthd.controller.dto.SignupDto;
 import oince.projecthd.domain.Member;
 import oince.projecthd.mapper.MemberMapper;
 import org.assertj.core.api.Assertions;
@@ -21,21 +22,22 @@ class MemberServiceTest {
     @Test
     @DisplayName("회원가입 성공")
     void signup() {
-        Member member = new Member(null, "test12", "test12", "name");
+        SignupDto member = new SignupDto("test12", "test12", "name");
 
-        memberService.signup(member);
-        Member findMember = memberService.findById(member.getMemberId());
+        String code = memberService.signup(member);
+        Member findMember = memberService.findByLoginId(member.getLoginId());
 
+        assertThat(code).isEqualTo("ok");
         assertThat(findMember).isNotNull();
-        assertThat(member.getMemberId()).isEqualTo(findMember.getMemberId());
+        assertThat(member.getLoginId()).isEqualTo(findMember.getLoginId());
 
     }
 
     @Test
     @DisplayName("회원가입 실패: 중복 아이디")
     void signupFail() {
-        Member member1 = new Member(null, "test123", "test12", "name");
-        Member member2 = new Member(null, "test123", "test123", "name1");
+        SignupDto member1 = new SignupDto("test123", "test12", "name");
+        SignupDto member2 = new SignupDto("test123", "test123", "name1");
 
         memberService.signup(member1);
         String code = memberService.signup(member2);
@@ -46,27 +48,28 @@ class MemberServiceTest {
     @Test
     @DisplayName("로그인 성공")
     void login() {
-        Member member = memberService.login("test1", "test1");
+        Integer memberId = memberService.login("test1", "test1");
+        Member loginMember = memberService.findById(memberId);
 
-        assertThat(member).isNotNull();
-        assertThat(member.getLoginId()).isEqualTo("test1");
-        assertThat(member.getPassword()).isEqualTo("test1");
-        assertThat(member.getName()).isEqualTo("name");
+        assertThat(loginMember).isNotNull();
+        assertThat(loginMember.getMemberId()).isEqualTo(memberId);
+        assertThat(loginMember.getLoginId()).isEqualTo("test1");
+        assertThat(loginMember.getPassword()).isEqualTo("test1");
     }
 
     @Test
     @DisplayName("로그인 실패: 아이디 없음")
     void loginFail1() {
-        Member member = memberService.login("test123", "test1");
+        Integer memberId = memberService.login("test123", "test1");
 
-        assertThat(member).isNull();
+        assertThat(memberId).isNull();
     }
 
     @Test
     @DisplayName("로그인 실패: 비밀번호 틀림")
     void loginFail() {
-        Member member = memberService.login("test1", "test1312");
+        Integer memberId = memberService.login("test1", "test1312");
 
-        assertThat(member).isNull();
+        assertThat(memberId).isNull();
     }
 }

@@ -11,7 +11,7 @@
         select * from board where board_id=#{boardId}
     </select>
 
-    <update id="viewsCount">
+    <update id="increaseViews">
         update board set views=views+1 where board_id=#{boardId}
     </update>
 

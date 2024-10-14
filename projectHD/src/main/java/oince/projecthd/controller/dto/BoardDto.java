@@ -6,7 +6,7 @@ import oince.projecthd.domain.Board;
 import java.time.format.DateTimeFormatter;
 
 @Data
-public class BoardRes {
+public class BoardDto {
     private int boardId;
     private int memberId;
     private String writer;
@@ -22,7 +22,7 @@ public class BoardRes {
     private String url;
     private String content;
 
-    public BoardRes(Board board, String writer, int numberOfComment) {
+    public BoardDto(Board board, String writer, int numberOfComment) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
 
         this.boardId = board.getBoardId();

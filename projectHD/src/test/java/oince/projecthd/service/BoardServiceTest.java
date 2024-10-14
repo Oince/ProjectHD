@@ -1,6 +1,6 @@
 package oince.projecthd.service;
 
-import oince.projecthd.controller.dto.BoardCreationReq;
+import oince.projecthd.controller.dto.BoardCreationDto;
 import oince.projecthd.domain.Board;
 import oince.projecthd.domain.CategoryName;
 import oince.projecthd.mapper.BoardMapper;
@@ -26,8 +26,8 @@ class BoardServiceTest {
     @DisplayName("게시글 생성")
     void addBoard() {
         int memberId = 1;
-        BoardCreationReq boardCreationReq = new BoardCreationReq("test", "https://test.com", "item", 1000, 1000, CategoryName.FOOD, "test content");
-        Board board = new Board(boardCreationReq, memberId);
+        BoardCreationDto boardCreationDto = new BoardCreationDto("test", "https://test.com", "item", 1000, 1000, CategoryName.FOOD, "test content");
+        Board board = new Board(boardCreationDto, memberId);
 
         boardService.addBoard(board);
 

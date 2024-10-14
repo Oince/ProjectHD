@@ -24,18 +24,16 @@ public class BoardService {
 
     @Transactional
     public Board getBoard (int boardId) {
-        Board board = boardMapper.findById(boardId);
-        board.setViews(board.getViews() + 1);
-        boardMapper.viewsCount(boardId);
+        boardMapper.increaseViews(boardId);
 
-        return board;
+        return boardMapper.findById(boardId);
     }
 
     public List<Board> getBoards() {
         return null;
     }
 
-    public int getCountOfComment(int boardId) {
+    public Integer getNumberOfComment(int boardId) {
         return 0;
     }
 

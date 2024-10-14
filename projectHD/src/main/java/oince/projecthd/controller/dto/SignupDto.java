@@ -3,10 +3,12 @@ package oince.projecthd.controller.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-public class SignupReq {
+@AllArgsConstructor
+public class SignupDto {
     @NotBlank
     @Size(min = 5, max = 30)
     private String loginId;
