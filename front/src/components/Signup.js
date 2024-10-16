@@ -44,6 +44,12 @@ function Signup() {
       setSuccessMessage('회원가입 성공!');
       setError('');  // 에러 메시지 초기화
 
+      // 성공 팝업 창 표시
+      window.alert('회원가입이 성공적으로 완료되었습니다!');
+
+      // 홈 화면으로 리다이렉트 (예: 홈 주소가 '/'라면)
+      window.location.href = '/';
+
       // 입력 필드 초기화
       setloginId('');
       setPassword('');
