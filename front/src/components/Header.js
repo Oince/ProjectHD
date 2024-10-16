@@ -47,7 +47,7 @@ function Header() {
           <div>
             {/* 로그인 성공 시 닉네임과 로그아웃 버튼, 글작성 버튼 표시 */}
             <span>안녕하세요, {nickname}님!</span>
-            <Link to="/write"> {/* 글작성 버튼 */}
+            <Link to="/Write"> {/* 글작성 버튼 */}
               <button className="write-button">글작성</button>
             </Link>
             <button className="logout-button" onClick={handleLogout}>로그아웃</button>

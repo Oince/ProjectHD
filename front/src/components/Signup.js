@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function Signup() {
+function SignUp() {
   const [name, setname] = useState('');
   const [loginId, setloginId] = useState('');
   const [password, setPassword] = useState('');
@@ -98,4 +98,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default SignUp;
