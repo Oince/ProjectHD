@@ -1,4 +1,4 @@
-package oince.projecthd.controller.form;
+package oince.projecthd.controller.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

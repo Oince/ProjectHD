@@ -1,20 +1,19 @@
 package oince.projecthd.controller;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oince.projecthd.controller.form.LoginDto;
-import oince.projecthd.controller.form.SignupDto;
+import oince.projecthd.controller.dto.LoginDto;
+import oince.projecthd.controller.dto.SignupDto;
 import oince.projecthd.domain.Member;
 import oince.projecthd.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -28,27 +27,25 @@ public class MemberController {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().build();
         }
-
-        Member newMember = new Member(null, signupDto.getLoginId(), signupDto.getPassword(), signupDto.getName());
-        String code = memberService.signup(newMember);
+        String code = memberService.signup(signupDto);
 
         if (code.equals("duplicate")) {
             return ResponseEntity.badRequest().build();
         }
-        log.info("new member={}", newMember);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> postLogin(@Valid @RequestBody LoginDto loginDto, HttpServletRequest request) {
+    public ResponseEntity<?> postLogin(@Valid @RequestBody LoginDto loginDto, HttpServletRequest request, HttpServletResponse response) {
 
-        Member member = memberService.login(loginDto.getLoginId(), loginDto.getPassword());
-        if (member == null) {
+        Integer memberId = memberService.login(loginDto.getLoginId(), loginDto.getPassword());
+        if (memberId == null) {
             return ResponseEntity.badRequest().build();
         } else {
             HttpSession session = request.getSession();
-            session.setAttribute("loginMember", member);
-            log.info("login member={}", member);
+            //response.addCookie(new Cookie("memberId", memberId.toString()));
+            session.setAttribute("loginMember", memberId);
+            log.info("login member={}", memberId);
             return ResponseEntity.ok().build();
         }
     }
@@ -56,12 +53,24 @@ public class MemberController {
     @PostMapping("/logout")
     public ResponseEntity<?> postLogout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        Member member = (Member)session.getAttribute("loginMember");
 
         if (session != null) {
+            Member member = (Member) session.getAttribute("loginMember");
             session.invalidate();
             log.info("logout member={}", member);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok().build();
+
+    }
+
+    @GetMapping("/nickname/{memberId}")
+    public ResponseEntity<?> getNickname(@PathVariable int memberId) {
+        Member member = memberService.findById(memberId);
+        if (member == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(member.getName());
     }
 }
