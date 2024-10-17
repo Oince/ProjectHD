@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 @Slf4j
 public enum CategoryName {
-    FOOD, SW, ELECTRONIC, LIVING, CLOTHES, INFO;
+    FOOD, SW, PC, ELECTRONIC, LIVING, CLOTHES, SALES, BEAUTY, MOBILE, PACKAGE, ETC;
 
     @JsonCreator
     public static CategoryName fromString(String name) {

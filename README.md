@@ -6,6 +6,10 @@
 
 문서 수정사항
 
+- 24/10/17
+  - GET /nickname/{memberId} 추가
+  - GET /boards, GET /board{boardId} 에서 writer 항목 삭제
+
 - 24/10/11
   - 요청 데이터 제약사항 추가
   - api 응답 코드 추가
@@ -97,7 +101,18 @@
 
 - req: 없음
 - res
-  - 200 코드 리턴
+  - 성공시 200 리턴
+  - 세션이 없으면 400 리턴
+
+### GET /nickname/{memberId}
+
+memberId에 해당하는 닉네임 돌려주는 api
+
+- req: 없음
+- res
+  - nickname: 닉네임
+  - 성공시 200
+  - memberId가 없는 경우에 404
 
 
 ### GET /boards
@@ -105,14 +120,11 @@
 홈화면에 표시할 게시글 정보
 
 - req: 없음
-
 - res
   - boardId: int
     - 게시글 id
   - memberId: int
     - 게시글 작성자 식별 id
-  - writer: string
-    - 게시글 작성자 닉네임
   - title: string
     - 제목
   - numberOfComment: int
@@ -138,7 +150,6 @@
 - res
   - boardId: int
   - memberId: int
-  - writer: string
   - title: string
   - numberOfComment: int
   - price: int

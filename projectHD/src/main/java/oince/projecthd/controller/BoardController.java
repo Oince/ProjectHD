@@ -1,5 +1,7 @@
 package oince.projecthd.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,12 +28,13 @@ public class BoardController {
 
     @PostMapping
     public ResponseEntity<?> postBoards(@Valid @RequestBody BoardCreationDto boardCreationDto,
-                                       @SessionAttribute(name = "loginMember", required = false) Member loginMember) {
-        if (loginMember == null) {
+                                        @SessionAttribute(name = "loginMember", required = false) Integer memberId) {
+
+        if (memberId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Board board = new Board(boardCreationDto, loginMember.getMemberId());
+        Board board = new Board(boardCreationDto, memberId);
         boardService.addBoard(board);
 
         return ResponseEntity.created(URI.create("/boards/" + board.getBoardId())).build();
