@@ -24,15 +24,21 @@ function Write() {
 
     try {
       // 서버에 글 작성 요청 보내기
-      const response = await axios.post('http://172.20.10.3:8080/write', {
-        title,
-        url,
-        itemName,
-        price: parseInt(price), // 가격은 숫자로 변환
-        deliveryPrice: parseInt(deliveryPrice), // 배송비는 숫자로 변환
-        category,
-        content
-      });
+      const response = await axios.post(
+        'http://172.20.10.3:8080/boards',  // 서버 URL
+        {
+          title,
+          url,
+          itemName,
+          price,
+          deliveryPrice,
+          category,
+          content,
+        }, 
+        {
+          withCredentials: true,  // JSESSIONID 쿠키를 함께 보냄
+        }
+      );
 
       if (response.status === 201) {
         // 글 작성 성공 시 서버에서 받은 Location URL로 이동
@@ -45,7 +51,7 @@ function Write() {
         alert('잘못된 요청입니다. 입력 데이터를 확인해주세요.');
       } else if (error.response.status === 401) {
         alert('로그인이 필요합니다.');
-        navigate('/login'); // 로그인 페이지로 이동
+        navigate('/'); // 홈화면으로 이동
       } else {
         alert('서버 오류가 발생했습니다.');
         console.error(error);
@@ -130,17 +136,17 @@ function Write() {
             required
           >
             <option value="">카테고리 선택</option>
-            <option value="먹거리">먹거리</option>
-            <option value="SW/게임">SW/게임</option>
-            <option value="PC제품">PC제품</option>
-            <option value="가전제품">가전제품</option>
-            <option value="생활용품">생활용품</option>
-            <option value="의류">의류</option>
-            <option value="세일정보">세일정보</option>
-            <option value="화장품">화장품</option>
-            <option value="모바일/상품권">모바일/상품권</option>
-            <option value="패키지/이용권">패키지/이용권</option>
-            <option value="기타">기타</option>
+            <option value="FOOD">먹거리</option>
+            <option value="SW">SW/게임</option>
+            <option value="PC">PC제품</option>
+            <option value="ELECTRONIC">가전제품</option>
+            <option value="LIVING">생활용품</option>
+            <option value="CLOTHES">의류</option>
+            <option value="SALES">세일정보</option>
+            <option value="BEAUTY">화장품</option>
+            <option value="MOBILE">모바일/상품권</option>
+            <option value="PACKAGE">패키지/이용권</option>
+            <option value="ETC">기타</option>
           </select>
         </div>
 
