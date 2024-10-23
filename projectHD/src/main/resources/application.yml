@@ -9,3 +9,11 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
   mapper-locations: /mappers/*.xml
+
+server:
+  servlet:
+    session:
+      cookie:
+        secure: true
+        http-only: true
+        same-site: none
