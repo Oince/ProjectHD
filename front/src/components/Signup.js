@@ -33,7 +33,7 @@ function SignUp() {
     }
 
     try {
-      const response = await axios.post('http://172.20.10.3:8080/signup', {
+      const response = await axios.post('https://oince.kro.kr/signup', {
         name,
         loginId,
         password,

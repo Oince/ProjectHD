@@ -25,7 +25,7 @@ function Write() {
     try {
       // 서버에 글 작성 요청 보내기
       const response = await axios.post(
-        'http://172.20.10.3:8080/boards',  // 서버 URL
+        'https://oince.kro.kr/boards',  // 서버 URL
         {
           title,
           url,
@@ -43,8 +43,11 @@ function Write() {
       if (response.status === 201) {
         // 글 작성 성공 시 서버에서 받은 Location URL로 이동
         alert('글 작성이 완료되었습니다.');
+        // 서버의 Location 헤더에서 새 게시글 URL 가져오기
         const postUrl = response.headers.location;
-        navigate(postUrl); // 생성된 게시글의 URL로 리다이렉트
+        
+        // 외부 URL 리다이렉트를 위해 window.location.href 사용
+        window.location.href = postUrl;
       }
     } catch (error) {
       if (error.response.status === 400) {

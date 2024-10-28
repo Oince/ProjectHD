@@ -19,7 +19,7 @@ function Header() {
 
     try {
       const response = await axios.post(
-        'http://172.20.10.3:8080/login',
+        'https://oince.kro.kr/login',
         { loginId, password },
         { withCredentials: true } // 서버로부터 세션 쿠키를 받기 위해 withCredentials 설정
       );
@@ -44,8 +44,8 @@ function Header() {
   // 로그아웃 요청 핸들러
   const handleLogout = async () => {
     try {
-      const response = await axios.post('http://172.20.10.3:8080/logout', {}, { withCredentials: true });
-
+      const response = await axios.post('https://oince.kro.kr/logout', {}, { withCredentials: true });
+      
       if (response.status === 200) {
         // 로그아웃 성공 시
         alert('로그아웃 되었습니다.');
