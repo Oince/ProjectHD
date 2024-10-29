@@ -68,7 +68,9 @@ function Header() {
   return (
     <header className="header">
       <div className="left">
-        <h1>핫딜사이트</h1> {/* 사이트 이름, 홈 버튼 */}
+        <Link to="/">
+          <h1>핫딜사이트</h1> {/* 사이트 이름, 홈 버튼 */}
+        </Link>
       </div>
       <div className="right">
         {isLoggedIn ? (
