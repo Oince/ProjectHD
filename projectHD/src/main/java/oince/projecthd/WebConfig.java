@@ -20,10 +20,8 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedHeaders("*")
-                .allowedOrigins("http://172.20.10.11:8080")
                 .allowedOriginPatterns("*")
                 .allowedMethods("*")
                 .allowCredentials(true);
-
     }
 }

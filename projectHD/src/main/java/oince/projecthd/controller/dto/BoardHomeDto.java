@@ -1,5 +1,6 @@
 package oince.projecthd.controller.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import oince.projecthd.domain.Board;
@@ -8,7 +9,9 @@ import java.time.format.DateTimeFormatter;
 
 @Data
 @NoArgsConstructor
-public class BoardDto {
+@AllArgsConstructor
+public class BoardHomeDto {
+
     private int boardId;
     private int memberId;
     private String title;
@@ -18,12 +21,8 @@ public class BoardDto {
     private String category;
     private String date;
     private int thumbsup;
-    private String itemName;
-    private int views;
-    private String url;
-    private String content;
 
-    public BoardDto(Board board, int numberOfComment) {
+    public BoardHomeDto(Board board, Integer numberOfComment) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
 
         this.boardId = board.getBoardId();
@@ -35,9 +34,5 @@ public class BoardDto {
         this.category = board.getCategory().toString();
         this.date = board.getDate().format(formatter);
         this.thumbsup = board.getThumbsup();
-        this.itemName = board.getItemName();
-        this.views = board.getViews();
-        this.url = board.getUrl();
-        this.content = board.getContent();
     }
 }

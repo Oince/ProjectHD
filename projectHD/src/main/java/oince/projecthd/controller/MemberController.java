@@ -1,6 +1,5 @@
 package oince.projecthd.controller;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -55,9 +54,9 @@ public class MemberController {
         HttpSession session = request.getSession(false);
 
         if (session != null) {
-            Member member = (Member) session.getAttribute("loginMember");
+            Integer memberId = (Integer) session.getAttribute("loginMember");
             session.invalidate();
-            log.info("logout member={}", member);
+            log.info("logout member={}", memberId);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().build();

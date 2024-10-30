@@ -10,15 +10,15 @@ mybatis:
     map-underscore-to-camel-case: true
   mapper-locations: /mappers/*.xml
 
-server:
-  servlet:
-    session:
-      cookie:
-        secure: true
-        http-only: true
-        same-site: none
-  port: 443
-  ssl:
-    key-store: ${SSL_LOCATION}
-    key-store-type: PKCS12
-    key-store-password: ${SSL_PASSWORD}
+#server:
+#  servlet:
+#    session:
+#      cookie:
+#        secure: true
+#        http-only: true
+#        same-site: none
+#  port: 443
+#  ssl:
+#    key-store: ${SSL_LOCATION}
+#    key-store-type: PKCS12
+#    key-store-password: ${SSL_PASSWORD}

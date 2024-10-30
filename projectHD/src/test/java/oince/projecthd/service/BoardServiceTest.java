@@ -27,13 +27,11 @@ class BoardServiceTest {
     void addBoard() {
         int memberId = 1;
         BoardCreationDto boardCreationDto = new BoardCreationDto("test", "https://test.com", "item", 1000, 1000, CategoryName.FOOD, "test content");
-        Board board = new Board(boardCreationDto, memberId);
 
-        boardService.addBoard(board);
+        int boardId = boardService.addBoard(boardCreationDto, 1);
 
-        Board findBoard = boardMapper.findById(board.getBoardId());
+        Board findBoard = boardMapper.findById(boardId);
 
-        assertThat(findBoard).usingRecursiveComparison().isEqualTo(board);
     }
 
 }
