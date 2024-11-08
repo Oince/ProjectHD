@@ -4,7 +4,14 @@
 
 
 
-문서 수정사항
+## 문서 수정사항
+
+- 24/11/08
+  - POST /thumbsup -> POST /boards/{boardId}/thumbsup 으로 이름 변경
+
+- 24/10/31
+  - GET /comments 에서 응답 데이터중 wirter 삭제
+  - POST /comments 성공시 응답코드 201->200으로 변경
 
 - 24/10/17
   - GET /nickname/{memberId} 추가
@@ -232,6 +239,16 @@ memberId에 해당하는 닉네임 돌려주는 api
     - 세션이 없을 경우: 401
     - 삭제 권한이 없을 경우: 403
 
+### POST /boards/{boardId}/thumbsup
+
+따봉 누르기
+
+- req: 없음
+- res
+  - 성공시 200
+  - 실패시
+    - 요청 데이터가 잘못된 경우: 400
+    - 세션이 없을 경우: 401
 
 ### GET /comments
 
@@ -247,8 +264,6 @@ memberId에 해당하는 닉네임 돌려주는 api
     - 댓글이 달려있는 게시글 id
   - memberId: int
     - 댓글 작성자 식별 id
-  - writer: string
-    - 댓글 작성자 닉네임
   - parendComment: int
     - 대댓글인 경우 부모 댓글의 id, 대댓글 아니면 null
   - date: string
@@ -272,9 +287,8 @@ memberId에 해당하는 닉네임 돌려주는 api
     - 댓글 내용
     - 최대 500 글자
 - res
-  - 성공시 201
-    - Location 필드에 생성된 댓글의 url 저장
-
+  - 성공시 200
+    
   - 실패시
     - 요청 데이터가 잘못된 경우: 400
     - 세션이 없는 경우: 401
@@ -285,26 +299,13 @@ memberId에 해당하는 닉네임 돌려주는 api
 댓글 삭제
 
 - req: 없음
-- res
+  - res
   - 성공시 200
   - 실패시
     - 요청 데이터가 잘못된 경우: 400
     - 세션이 없을 경우: 401
     - 삭제 권한이 없을 경우: 403
 
-
-### POST /thumbsup
-
-따봉 누르기
-
-- req
-  - boardId: string
-    - 따봉 누를 게시글 id
-- res
-  - 성공시 200
-  - 실패시
-    - 요청 데이터가 잘못된 경우: 400
-    - 세션이 없을 경우: 401
 
 
 ## 테이블
@@ -331,27 +332,27 @@ create table board (
     delivery_price	int not null,
     category		varchar(10) not null,
     content			varchar(1000) not null,
-    foreign key(member_id) references member(member_id)
+    foreign key(member_id) references member(member_id) on delete cascade
 );
 
 create table comment(
-	comment_id 		int primary key not null,
+	comment_id 		int primary key auto_increment not null,
     board_id		int not null,
     member_id		int not null,
     parent_comment	int,
     content			varchar(500) not null,
     date			datetime not null,
-    foreign key(board_id) references board(board_id),
-    foreign key(member_id) references member(member_id),
-	foreign key(parent_comment) references comment(comment_id)
+    foreign key(board_id) references board(board_id) on delete cascade,
+    foreign key(member_id) references member(member_id) on delete cascade,
+	foreign key(parent_comment) references comment(comment_id) on delete cascade
 );
 
 create table thumbsup_table (
 	board_id		int not null,
     member_id 		int not null,
     primary key(board_id, member_id),
-  	foreign key(board_id) references board(board_id),
-    foreign key(member_id) references member(member_id)
+  	foreign key(board_id) references board(board_id) on delete cascade,
+    foreign key(member_id) references member(member_id) on delete cascade
 );
 ```
 

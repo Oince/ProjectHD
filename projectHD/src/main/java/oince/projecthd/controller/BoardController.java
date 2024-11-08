@@ -24,14 +24,14 @@ import java.util.List;
 public class BoardController {
 
     private final BoardService boardService;
-    private final MemberService memberService;
 
     @PostMapping
     public ResponseEntity<?> postBoards(@Valid @RequestBody BoardCreationDto boardCreationDto,
                                         @SessionAttribute(name = "loginMember", required = false) Integer memberId) {
 
         if (memberId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            log.info("세션값 없음");
+            return ResponseEntity.status(401).build();
         }
 
         int boardId = boardService.addBoard(boardCreationDto, memberId);
@@ -51,7 +51,7 @@ public class BoardController {
 
         BoardDto res = boardService.getBoard(boardId);
         if (res == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.ok(res);
@@ -67,10 +67,10 @@ public class BoardController {
             return ResponseEntity.badRequest().build();
         }
         if (memberId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(401).build();
         }
         if (board.getMemberId() != memberId) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(403).build();
         }
 
         boardService.updateBoard(boardCreationDto, boardId);
@@ -86,13 +86,26 @@ public class BoardController {
             return ResponseEntity.badRequest().build();
         }
         if (memberId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(401).build();
         }
         if (board.getMemberId() != memberId) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(403).build();
         }
 
         boardService.deleteBoard(boardId);
         return ResponseEntity.ok().build();
     }
+
+//    @PostMapping("/{boardId}/thumbsup")
+//    public ResponseEntity<?> postThumbsup(@PathVariable(value = "boardId") Integer boardId,
+//                                          @SessionAttribute(name = "loginMember", required = false) Integer memberId) {
+//
+//        if (memberId == null) {
+//            return ResponseEntity.status(401).build();
+//        }
+//
+//        return ResponseEntity.ok().build();
+//
+//
+//    }
 }
