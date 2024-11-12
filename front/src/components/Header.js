@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';  // React Router의 Link, useNavigate 사용
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function Header() {
-  const [loginId, setLoginId] = useState('');  // 아이디 입력 상태
-  const [password, setPassword] = useState('');  // 비밀번호 입력 상태
-  const [isLoggedIn, setIsLoggedIn] = useState(false);  // 로그인 상태 관리
-  const [nickname, setNickname] = useState('');  // 로그인 시 사용자 닉네임 저장
+  const [loginId, setLoginId] = useState(''); // 아이디 입력 상태
+  const [password, setPassword] = useState(''); // 비밀번호 입력 상태
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 관리
+  const [nickname, setNickname] = useState(''); // 로그인 시 사용자 닉네임 저장
   const navigate = useNavigate();
 
   // 로그인 요청 핸들러
@@ -28,8 +28,22 @@ function Header() {
         // 로그인 성공 시
         alert('로그인 성공');
         setIsLoggedIn(true);
-        setNickname(response.data.nickname);  // 서버로부터 받은 닉네임을 저장 (가정)
-        navigate('/');  // 홈 화면으로 리다이렉트
+        
+        const memberId = response.data.memberId; // 서버로부터 받은 memberId
+        // memberId를 통해 닉네임 가져오기
+        console.log(memberId);
+        
+        try {
+          const nicknameResponse = await axios.get(`https://oince.kro.kr/nickname/${memberId}`, {withCredentials: true});
+          if (nicknameResponse.status === 200) {
+            setNickname(nicknameResponse.data.name); // 서버로부터 받은 닉네임을 저장
+          }
+        } catch (error) {
+          console.error('닉네임을 가져오는 데 실패했습니다.', error);
+          alert('닉네임을 불러오는 데 실패했습니다.');
+        }
+
+        navigate('/'); // 홈 화면으로 리다이렉트
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
@@ -49,9 +63,9 @@ function Header() {
       if (response.status === 200) {
         // 로그아웃 성공 시
         alert('로그아웃 되었습니다.');
-        setIsLoggedIn(false);  // 로그인 상태 해제
-        setNickname('');  // 닉네임 초기화
-        navigate('/');  // 홈 화면으로 리다이렉트
+        setIsLoggedIn(false); // 로그인 상태 해제
+        setNickname(''); // 닉네임 초기화
+        navigate('/'); // 홈 화면으로 리다이렉트
       }
     } catch (error) {
       if(error.response.status === 400){

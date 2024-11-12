@@ -3,7 +3,6 @@ import axios from 'axios';
 import {
   Container,
   WriteContainer,
-  Title,
   CategoryContainer,
   CategoryButton,
   Form,
@@ -12,6 +11,7 @@ import {
   SubmitButton,
   Message
 } from './StyledComponents';
+import { useNavigate } from 'react-router-dom';
 
 function Write() {
   const [activeCategory, setActiveCategory] = useState('');
@@ -22,6 +22,7 @@ function Write() {
   const [deliveryPrice, setDeliveryPrice] = useState('');
   const [content, setContent] = useState('');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const categories = [
     "FOOD", "SW", "PC", "ELECTRONIC", "CLOTHES", 
@@ -47,32 +48,38 @@ function Write() {
     };
 
     try {
-      // POST 요청을 보내기
-      const response = await axios.post('https://oince.kro.kr/boards', postData);
+      const response = await axios.post('https://oince.kro.kr/boards', postData, { withCredentials: true });
       if (response.status === 201) {
         setMessage("글 작성이 완료되었습니다!");
-        // 필요한 경우 입력 폼 초기화
-        setActiveCategory('');
-        setTitle('');
-        setUrl('');
-        setItemName('');
-        setPrice('');
-        setDeliveryPrice('');
-        setContent('');
-        navigator('/');
-      } else {
-        setMessage("글 작성에 실패했습니다. 다시 시도해주세요.");
+        
+        //const postUrl = response.headers.location;
+        //const url = 'https://oince.kro.kr'+postUrl;
+        //window.location.href = url;
+        //navigate(postUrl);
+        const postUrl = response.headers.location;
+        const postId = postUrl.split('/').pop();  // Extract the postId from the URL path
+        navigate(`/boards/${postId}`);
       }
     } catch (error) {
+      if (error.response) {
+        if (error.response.status === 400) {
+          setMessage("요청 데이터가 잘못되었습니다. 입력값을 확인하세요.");
+        } else if (error.response.status === 401) {
+          setMessage("로그인이 필요합니다.");
+        } else {
+          setMessage("서버 오류가 발생했습니다. 다시 시도해주세요.");
+        }
+      } else {
+        setMessage("서버와의 연결에 실패했습니다. 다시 시도해주세요.");
+      }
       console.error(error);
-      setMessage("서버와의 연결에 실패했습니다. 다시 시도해주세요.");
     }
   };
+
 
   return (
     <Container>
       <WriteContainer>
-        <Title>글 작성</Title>
         <CategoryContainer>
           {categories.map((category) => (
             <CategoryButton

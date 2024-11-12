@@ -1,20 +1,7 @@
-// TabsWithPostList.js
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-
-// Sample data (Replace this with your API call in useEffect)
-const samplePosts = {
-  먹거리: [{ id: 1, title: '맛있는 피자' }, { id: 2, title: '버거 스페셜' }],
-  소프트웨어: [{ id: 3, title: '새 소프트웨어 출시' }],
-  PC제품: [{ id: 4, title: '게이밍 PC 할인' }],
-  가전제품: [{ id: 5, title: '스마트폰 할인' }],
-  의류: [{ id: 6, title: '겨울 자켓' }],
-  세일정보: [{ id: 7, title: '블랙 프라이데이 딜' }],
-  화장품: [{ id: 8, title: '스킨 케어 필수품' }],
-  모바일: [{ id: 9, title: '최신 모바일 액세서리' }],
-  상품권: [{ id: 10, title: '휴가 패키지' }],
-  기타: [{ id: 11, title: '기타 할인 상품' }]
-};
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 // Styled Components
 const Container = styled.div`
@@ -56,6 +43,7 @@ const PostItem = styled.div`
   border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 `;
 
 const PostTitle = styled.h3`
@@ -64,23 +52,51 @@ const PostTitle = styled.h3`
   color: #333;
 `;
 
+const PostDetails = styled.div`
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 5px;
+`;
+
 const Tabs = () => {
   const [activeCategory, setActiveCategory] = useState('');
+  const [postsByCategory, setPostsByCategory] = useState({});
   const [posts, setPosts] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch posts based on activeCategory
-    // Replace this sample data logic with API call if needed
-    if (activeCategory === '') {
-      // Show all posts if no category is selected
-      const allPosts = Object.values(samplePosts).flat();
-      setPosts(allPosts);
-    } else {
-      setPosts(samplePosts[activeCategory] || []);
-    }
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get('https://oince.kro.kr/boards');
+        if (response.status === 200) {
+          const groupedPosts = response.data.reduce((acc, post) => {
+            if (!acc[post.category]) {
+              acc[post.category] = [];
+            }
+            acc[post.category].push(post);
+            return acc;
+          }, {});
+          setPostsByCategory(groupedPosts);
+          setPosts(groupedPosts[activeCategory] || Object.values(groupedPosts).flat());
+        }
+      } catch (error) {
+        console.error('게시글을 불러오는데 실패했습니다:', error);
+      }
+    };
+
+    fetchPosts();
   }, [activeCategory]);
 
-  const categories = Object.keys(samplePosts);
+  const categories = Object.keys(postsByCategory);
+
+  const handleCategoryClick = (category) => {
+    setActiveCategory(category === activeCategory ? '' : category);
+    setPosts(category === activeCategory ? Object.values(postsByCategory).flat() : postsByCategory[category]);
+  };
+
+  const handlePostClick = (postId) => {
+    navigate(`/boards/${postId}`);  // 상세화면으로 이동
+  };
 
   return (
     <Container>
@@ -89,7 +105,7 @@ const Tabs = () => {
           <CategoryButton
             key={category}
             active={category === activeCategory}
-            onClick={() => setActiveCategory(category === activeCategory ? '' : category)}
+            onClick={() => handleCategoryClick(category)}
           >
             {category}
           </CategoryButton>
@@ -98,8 +114,13 @@ const Tabs = () => {
 
       <PostList>
         {posts.map((post) => (
-          <PostItem key={post.id}>
+          <PostItem key={post.boardId} onClick={() => handlePostClick(post.boardId)}>
             <PostTitle>{post.title}</PostTitle>
+            <PostDetails>
+              작성자 ID: {post.memberId} | 댓글: {post.numberOfComment} | 가격: {post.price}원 | 배달비: {post.deliveryPrice}원
+              <br />
+              날짜: {new Date(post.date).toLocaleDateString()} | 좋아요: {post.thumbsup} | 조회수: {post.views}
+            </PostDetails>
           </PostItem>
         ))}
       </PostList>
