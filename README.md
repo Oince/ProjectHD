@@ -6,6 +6,13 @@
 
 ## 문서 수정사항
 
+- 24/11/15
+  - GET /comments -> GET /comment?boardId= 로 변경
+  - GET /comments/{commentId} 추가
+  - POST /comments 응답 데이터에 Location 추가하고 응답 코드 201로 변경
+  - GET /nickname/{memberId} -> GET /nickname?memberId=?로 변경
+  - 로그인시 memberId 값을 전달하도록 변경
+
 - 24/11/08
   - POST /thumbsup -> POST /boards/{boardId}/thumbsup 으로 이름 변경
 
@@ -111,7 +118,7 @@
   - 성공시 200 리턴
   - 세션이 없으면 400 리턴
 
-### GET /nickname/{memberId}
+### GET /nickname?memberId=
 
 memberId에 해당하는 닉네임 돌려주는 api
 
@@ -250,13 +257,35 @@ memberId에 해당하는 닉네임 돌려주는 api
     - 요청 데이터가 잘못된 경우: 400
     - 세션이 없을 경우: 401
 
-### GET /comments
+### GET /comments/{commentId}
+
+댓글 
+
+- req: 없음
+
+- res
+
+  - commentId: int
+    - 댓글 id
+  - boardId: int
+    - 댓글이 달려있는 게시글 id
+  - memberId: int
+    - 댓글 작성자 식별 id
+  - parendComment: int
+    - 대댓글인 경우 부모 댓글의 id, 대댓글 아니면 null
+  - date: string
+    - 댓글 생성 날짜
+  - content:string
+    - 댓글 내용
+
+  - 성공시 200
+  - commentId에 해당하는 댓글이 없으면 404
+
+### GET /comments?boardId=
 
 댓글 목록 가져오기
 
-- req
-  - boardId: int
-    - 가져올 댓글이 있는 게시글 id
+- req: 없음
 - res
   - commentId: int
     - 댓글 id
@@ -287,7 +316,8 @@ memberId에 해당하는 닉네임 돌려주는 api
     - 댓글 내용
     - 최대 500 글자
 - res
-  - 성공시 200
+  - 성공시 201
+    - HTTP 헤더의 Location 필드에 생성된 댓글의 url 저장
     
   - 실패시
     - 요청 데이터가 잘못된 경우: 400
