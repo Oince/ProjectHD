@@ -15,4 +15,6 @@ public interface CommentMapper {
     void addNewComment(Comment comment);
 
     void deleteComment(int commentId);
+
+    int numberOfComment(int boardId);
 }

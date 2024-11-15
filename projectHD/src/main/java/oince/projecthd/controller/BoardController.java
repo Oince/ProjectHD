@@ -96,16 +96,22 @@ public class BoardController {
         return ResponseEntity.ok().build();
     }
 
-//    @PostMapping("/{boardId}/thumbsup")
-//    public ResponseEntity<?> postThumbsup(@PathVariable(value = "boardId") Integer boardId,
-//                                          @SessionAttribute(name = "loginMember", required = false) Integer memberId) {
-//
-//        if (memberId == null) {
-//            return ResponseEntity.status(401).build();
-//        }
-//
-//        return ResponseEntity.ok().build();
-//
-//
-//    }
+    @PostMapping("/{boardId}/thumbsup")
+    public ResponseEntity<?> postThumbsup(@PathVariable(value = "boardId") Integer boardId,
+                                          @SessionAttribute(name = "loginMember", required = false) Integer memberId) {
+
+        if (memberId == null) {
+            return ResponseEntity.status(401).build();
+        } else if (boardService.findById(boardId) == null) {
+            return ResponseEntity.status(400).build();
+        }
+
+        int code = boardService.thumbsUp(boardId, memberId);
+
+        if (code == 400) {
+            return ResponseEntity.status(400).build();
+        } else {
+            return ResponseEntity.ok().build();
+        }
+    }
 }

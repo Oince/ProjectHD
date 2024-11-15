@@ -6,7 +6,12 @@ import oince.projecthd.controller.dto.BoardCreationDto;
 import oince.projecthd.controller.dto.BoardDto;
 import oince.projecthd.controller.dto.BoardHomeDto;
 import oince.projecthd.domain.Board;
+import oince.projecthd.domain.Comment;
+import oince.projecthd.domain.ThumbsupTable;
 import oince.projecthd.mapper.BoardMapper;
+import oince.projecthd.mapper.CommentMapper;
+import oince.projecthd.mapper.MemberMapper;
+import oince.projecthd.mapper.ThumpsupTableMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +25,9 @@ import java.util.List;
 public class BoardService {
 
     private final BoardMapper boardMapper;
+    private final MemberMapper memberMapper;
+    private final ThumpsupTableMapper thumpsupTableMapper;
+    private final CommentMapper commentMapper;
 
     @Transactional
     public int addBoard(BoardCreationDto boardCreationDto, int memberId) {
@@ -39,16 +47,15 @@ public class BoardService {
             return null;
         }
 
-        //임시로 0넣음 추후에 수정 필요
-        return new BoardDto(board, 0);
+        int numberOfComment = commentMapper.numberOfComment(boardId);
+        return new BoardDto(board, numberOfComment);
     }
 
     public List<BoardHomeDto> getBoards() {
         List<Board> boards = boardMapper.findAll();
         List<BoardHomeDto> res = new LinkedList<>();
         for (Board board : boards) {
-            //여기도 임시로 0넣음
-            res.add(new BoardHomeDto(board, 0));
+            res.add(new BoardHomeDto(board, commentMapper.numberOfComment(board.getBoardId())));
         }
 
         return res;
@@ -76,9 +83,23 @@ public class BoardService {
         log.info("board delete={}", boardId);
     }
 
+    @Transactional
+    public int thumbsUp(int boardId, int memberId) {
+        ThumbsupTable byId = thumpsupTableMapper.findById(boardId, memberId);
+        if (byId != null) {
+            return 400;
+        }
+
+        ThumbsupTable thumbsupTable = new ThumbsupTable(boardId, memberId);
+        thumpsupTableMapper.addNewThumbsup(thumbsupTable);
+        return 200;
+    }
+
     public Board findById(int boardId) {
         return boardMapper.findById(boardId);
     }
+
+
 
 
 

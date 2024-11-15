@@ -3,13 +3,13 @@ package oince.projecthd.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oince.projecthd.controller.dto.BoardIdDto;
 import oince.projecthd.controller.dto.CommentCreationDto;
 import oince.projecthd.domain.Comment;
 import oince.projecthd.service.CommentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @Slf4j
@@ -21,10 +21,15 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping
-    public ResponseEntity<List<Comment>> getComments(@RequestBody BoardIdDto boardIdDto) {
-        int boardId = boardIdDto.getBoardId();
+    public ResponseEntity<List<Comment>> getComments(@RequestParam int boardId) {
         List<Comment> comments = commentService.getComments(boardId);
         return ResponseEntity.ok(comments);
+    }
+
+    @GetMapping("/{commentId}")
+    public ResponseEntity<Comment> getComment(@PathVariable(value = "commentId") int commentId) {
+        Comment comment = commentService.getComment(commentId);
+        return ResponseEntity.ok(comment);
     }
 
     @PostMapping
@@ -41,7 +46,7 @@ public class CommentController {
             return ResponseEntity.status(400).build();
         }
         else {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.created(URI.create("/comments/" + code)).build();
         }
     }
 
@@ -62,8 +67,5 @@ public class CommentController {
         } else {
             return ResponseEntity.ok().build();
         }
-
-
-
     }
 }

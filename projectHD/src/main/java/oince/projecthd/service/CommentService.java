@@ -31,7 +31,7 @@ public class CommentService {
 
         commentMapper.addNewComment(comment);
         log.info("comment creation={}", comment.getCommentId());
-        return 200;
+        return comment.getCommentId();
     }
 
     @Transactional
@@ -45,6 +45,9 @@ public class CommentService {
         }
         commentMapper.deleteComment(commentId);
         return 200;
+    }
 
+    public Comment getComment(int commentId) {
+        return commentMapper.findById(commentId);
     }
 }

@@ -19,4 +19,8 @@
         delete from comment where comment_id=#{commentId};
     </delete>
 
+    <select id="numberOfComment">
+        select count(*) from comment where board_id=#{boardId}
+    </select>
+
 </mapper>

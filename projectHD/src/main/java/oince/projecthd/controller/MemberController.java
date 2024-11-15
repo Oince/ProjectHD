@@ -1,5 +1,6 @@
 package oince.projecthd.controller;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -7,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oince.projecthd.controller.dto.LoginDto;
+import oince.projecthd.controller.dto.MemberIdDto;
 import oince.projecthd.controller.dto.SignupDto;
 import oince.projecthd.domain.Member;
 import oince.projecthd.service.MemberService;
@@ -35,17 +37,16 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> postLogin(@Valid @RequestBody LoginDto loginDto, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<MemberIdDto> postLogin(@Valid @RequestBody LoginDto loginDto, HttpServletRequest request, HttpServletResponse response) {
 
         Integer memberId = memberService.login(loginDto.getLoginId(), loginDto.getPassword());
         if (memberId == null) {
             return ResponseEntity.badRequest().build();
         } else {
             HttpSession session = request.getSession();
-            //response.addCookie(new Cookie("memberId", memberId.toString()));
             session.setAttribute("loginMember", memberId);
             log.info("login member={}", memberId);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(new MemberIdDto(memberId));
         }
     }
 
@@ -64,8 +65,8 @@ public class MemberController {
 
     }
 
-    @GetMapping("/nickname/{memberId}")
-    public ResponseEntity<?> getNickname(@PathVariable int memberId) {
+    @GetMapping("/nickname")
+    public ResponseEntity<?> getNickname(@RequestParam int memberId) {
         Member member = memberService.findById(memberId);
         if (member == null) {
             return ResponseEntity.notFound().build();
