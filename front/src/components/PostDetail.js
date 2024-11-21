@@ -7,9 +7,11 @@ import {
   Info,
   Content,
   UrlLink,
-  BackButton,
   ButtonContainer,
-  ActionButton
+  ActionButton,
+  CommentContainer,
+  CommentInput,
+  CommentButton
 } from './StyledComponents';
 
 function PostDetail() {
@@ -17,6 +19,8 @@ function PostDetail() {
   const navigate = useNavigate();
   
   const [post, setPost] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -37,6 +41,39 @@ function PostDetail() {
     };
 
     fetchPostDetails();
+  }, [boardId]);
+
+  // Fetch comments
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await axios.get(`https://oince.kro.kr/comments?boardId=${boardId}`, { withCredentials: true });
+        if (response.status === 200) {
+          setComments(response.data);
+        }
+      } catch (err) {
+        if (err.response) {
+          // 서버 응답이 있을 경우 상태 코드에 따라 에러 메시지 출력
+          switch (err.response.status) {
+            case 400:
+              alert("요청 데이터가 잘못되었습니다. 댓글을 불러오는 데 실패했습니다.");
+              break;
+            case 404:
+              alert("해당 게시글의 댓글을 찾을 수 없습니다.");
+              break;
+            default:
+              alert("서버 오류가 발생했습니다.");
+          }
+        } else {
+          // 서버 응답이 없는 경우
+          alert("네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+        }
+        console.error(err); // 상세 오류 내용 콘솔 출력
+      }
+    };
+  
+    fetchComments();
   }, [boardId]);
 
   const handleDelete = async () => {
@@ -106,6 +143,68 @@ function PostDetail() {
     }
   };
 
+  // Handle comment submission
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        'https://oince.kro.kr/comments',
+        {
+          boardId: boardId,
+          parentComment: null, // 기본 댓글로 설정, 대댓글 기능 추가 시 수정
+          content: newComment,
+        },
+        { withCredentials: true }
+      );
+
+      if (response.status === 200) {
+        alert("댓글 입력에 성공했습니다.");
+        setComments([...comments, response.data]); // 새 댓글 추가
+        setNewComment(""); // 입력창 초기화
+      }
+    } catch (error) {
+      if (error.response) {
+        switch (error.response.status) {
+          case 400:
+            alert("요청 데이터가 잘못되었습니다. 입력값을 확인하세요.");
+            break;
+          case 401:
+            alert("로그인이 필요합니다.");
+            break;
+          default:
+            alert("서버 오류가 발생했습니다.");
+        }
+      }
+    }
+  };
+
+    // Handle comment deletion
+  const handleCommentDelete = async (commentId) => {
+    try {
+      const response = await axios.delete(`https://oince.kro.kr/comments/${commentId}`, { withCredentials: true });
+      if (response.status === 200) {
+        setComments(comments.filter(comment => comment.commentId !== commentId));
+      }
+    } catch (error) {
+      if (error.response) {
+        switch (error.response.status) {
+          case 400:
+            alert("요청 데이터가 잘못되었습니다. 입력값을 확인하세요.");
+            break;
+          case 401:
+            alert("로그인이 필요합니다.");
+            break;
+          case 403:
+            alert("삭제 권한이 없습니다.");
+            break;
+          default:
+            alert("서버 오류가 발생했습니다.");
+        }
+      }
+    }
+  };
+
+
   if (error) {
     return <PostContainer>{error}</PostContainer>;
   }
@@ -116,6 +215,10 @@ function PostDetail() {
 
   return (
     <PostContainer>
+      <ButtonContainer>
+        <ActionButton onClick={handleEdit}>수정</ActionButton>
+        <ActionButton onClick={handleDelete}>삭제</ActionButton>
+      </ButtonContainer>
       <PostTitle>{post.title}</PostTitle>
       <Info><strong>상품명:</strong> {post.itemName}</Info>
       <Info><strong>가격:</strong> {post.price}원</Info>
@@ -130,12 +233,26 @@ function PostDetail() {
         <p>{post.content}</p>
       </Content>
 
-      <ButtonContainer>
-        <ActionButton onClick={handleEdit}>수정</ActionButton>
-        <ActionButton onClick={handleDelete}>삭제</ActionButton>
-      </ButtonContainer>
+      <CommentContainer>
+        <h3>댓글</h3>
+        {comments.map((comment) => (
+          <div key={comment.commentId} style={{ marginBottom: '8px' }}>
+            <p>{comment.content}</p>
+            <small>{comment.date}</small>
+            <ActionButton onClick={() => handleCommentDelete(comment.commentId)}>삭제</ActionButton>
+          </div>
+        ))}
 
-      <BackButton onClick={() => navigate(-1)}>뒤로 가기</BackButton>
+        <form onSubmit={handleCommentSubmit} style={{ display: 'flex', flexDirection: 'column', marginTop: '16px' }}>
+          <CommentInput
+            type="text"
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            placeholder="댓글을 입력하세요"
+          />
+          <CommentButton type="submit">댓글 등록</CommentButton>
+        </form>
+      </CommentContainer>
     </PostContainer>
   );
 }

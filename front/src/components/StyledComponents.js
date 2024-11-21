@@ -110,6 +110,45 @@ export const Message = styled.p`
   color: #333;
 `;
 
+// 댓글 목록을 담는 컨테이너
+export const CommentContainer = styled.div`
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+`;
+
+// 댓글 입력창
+export const CommentInput = styled.input`
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  outline: none;
+  box-sizing: border-box;
+  &:focus {
+    border-color: #ff5c5c;
+  }
+`;
+
+// 댓글 등록 버튼
+export const CommentButton = styled.button`
+  margin-top: 10px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  color: #ffffff;
+  background-color: #ff5c5c;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
+    background-color: #e04a4a;
+  }
+`;
+
 
 export const PostContainer = styled.div`
   max-width: 800px;
@@ -150,20 +189,6 @@ export const UrlLink = styled.a`
   text-decoration: underline;
   &:hover {
     color: #0056b3;
-  }
-`;
-
-export const BackButton = styled.button`
-  margin-top: 20px;
-  padding: 10px 15px;
-  font-size: 1rem;
-  color: #fff;
-  background-color: #1e90ff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  &:hover {
-    background-color: #0056b3;
   }
 `;
 

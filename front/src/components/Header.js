@@ -34,12 +34,15 @@ function Header() {
         console.log(memberId);
         
         try {
-          const nicknameResponse = await axios.get(`https://oince.kro.kr/nickname/${memberId}`, {withCredentials: true});
+          const nicknameResponse = await axios.get(`https://oince.kro.kr/nickname?memberId=${memberId}`, {withCredentials: true});
+          console.log(nicknameResponse.data);
           if (nicknameResponse.status === 200) {
-            setNickname(nicknameResponse.data.name); // 서버로부터 받은 닉네임을 저장
+            setNickname(nicknameResponse.data); // 서버로부터 받은 닉네임을 저장
           }
         } catch (error) {
-          console.error('닉네임을 가져오는 데 실패했습니다.', error);
+          if(error.response.status === 404){
+            alert("멤버 ID가 없습니다.");
+          }
           alert('닉네임을 불러오는 데 실패했습니다.');
         }
 
