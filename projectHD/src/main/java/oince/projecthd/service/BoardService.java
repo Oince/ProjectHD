@@ -90,6 +90,7 @@ public class BoardService {
             return 400;
         }
 
+        boardMapper.increaseThumbsup(boardId);
         ThumbsupTable thumbsupTable = new ThumbsupTable(boardId, memberId);
         thumpsupTableMapper.addNewThumbsup(thumbsupTable);
         return 200;

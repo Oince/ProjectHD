@@ -19,6 +19,10 @@
         update board set views=views+1 where board_id=#{boardId}
     </update>
 
+    <update id="increaseThumbsup">
+        update board set thumbsup=thumbsup+1 where board_id=#{boardId}
+    </update>
+
     <update id="updateBoard" parameterType="oince.projecthd.domain.Board">
         update board set title=#{title}, url=#{url}, item_name=#{itemName}, price=#{price},
                          delivery_price=#{deliveryPrice}, category=#{category}, content=#{content}

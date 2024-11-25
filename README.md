@@ -11,7 +11,7 @@
   - GET /comments/{commentId} 추가
   - POST /comments 응답 데이터에 Location 추가하고 응답 코드 201로 변경
   - GET /nickname/{memberId} -> GET /nickname?memberId=?로 변경
-  - 로그인시 memberId 쿠키를 전달하도록 변경
+  - 로그인시 memberId 값을 전달하도록 변경
 
 - 24/11/08
   - POST /thumbsup -> POST /boards/{boardId}/thumbsup 으로 이름 변경
@@ -384,5 +384,13 @@ create table thumbsup_table (
   	foreign key(board_id) references board(board_id) on delete cascade,
     foreign key(member_id) references member(member_id) on delete cascade
 );
+
+create table file_table (
+	file_id			char(40) not null primary key,
+    member_id		int not null,
+    path			varchar(100) not null,
+    foreign key(membe_id) references member(member_id) on delete cascade;
+    foreign key()
+)
 ```
 

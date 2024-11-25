@@ -16,6 +16,8 @@ public interface BoardMapper {
 
     void increaseViews(int boardId);
 
+    void increaseThumbsup(int boardId);
+
     void updateBoard(Board board);
 
     void deleteBoard(int boardId);
