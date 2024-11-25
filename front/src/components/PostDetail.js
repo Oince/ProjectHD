@@ -24,13 +24,41 @@ function PostDetail() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchPostDetails = async () => {
+    const fetchPostAndComments = async () => {
       try {
-        const response = await axios.get(`https://oince.kro.kr/boards/${boardId}`);
+        const postResponse = await axios.get(`https://oince.kro.kr/boards/${boardId}`);
         
-        if (response.status === 200) {
-          setPost(response.data);
+        if (postResponse.status === 200) {
+          setPost(postResponse.data);
         }
+        
+        const commentsResponse = await axios.get(`https://oince.kro.kr/comments?boardId=${boardId}`, {
+          withCredentials: true,
+        });
+        if (commentsResponse.status === 200) {
+          const commentsWithNicknames = await Promise.all(
+            commentsResponse.data.map(async (comment) => {
+              try {
+                const nicknameResponse = await axios.get(
+                  `https://oince.kro.kr/nickname?memberId=${comment.memberId}`,
+                  { withCredentials: true }
+                );
+                return {
+                  ...comment,
+                  nickname: nicknameResponse.data || '알 수 없음', // 닉네임 설정
+                };
+              } catch (error) {
+                console.error(`Failed to fetch nickname for memberId ${comment.memberId}:`, error);
+                return {
+                  ...comment,
+                  nickname: '알 수 없음', // 실패 시 기본 닉네임 설정
+                };
+              }
+            })
+          );
+          setComments(commentsWithNicknames);
+        }
+        
       } catch (err) {
         if (err.response && err.response.status === 404) {
           setError("게시글을 찾을 수 없습니다.");
@@ -40,34 +68,56 @@ function PostDetail() {
       }
     };
 
-    fetchPostDetails();
+    fetchPostAndComments();
   }, [boardId]);
 
   // Fetch comments
 
+    // Fetch comments with nicknames
+  /*
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await axios.get(`https://oince.kro.kr/comments?boardId=${boardId}`, { withCredentials: true });
-        if (response.status === 200) {
-          setComments(response.data);
+        const commentsResponse = await axios.get(`https://oince.kro.kr/comments?boardId=${boardId}`, {
+          withCredentials: true,
+        });
+        if (commentsResponse.status === 200) {
+          const commentsWithNicknames = await Promise.all(
+            commentsResponse.data.map(async (comment) => {
+              try {
+                const nicknameResponse = await axios.get(
+                  `https://oince.kro.kr/nickname?memberId=${comment.memberId}`,
+                  { withCredentials: true }
+                );
+                return {
+                  ...comment,
+                  nickname: nicknameResponse.data || '알 수 없음', // 닉네임 설정
+                };
+              } catch (error) {
+                console.error(`Failed to fetch nickname for memberId ${comment.memberId}:`, error);
+                return {
+                  ...comment,
+                  nickname: '알 수 없음', // 실패 시 기본 닉네임 설정
+                };
+              }
+            })
+          );
+          setComments(commentsWithNicknames);
         }
       } catch (err) {
         if (err.response) {
-          // 서버 응답이 있을 경우 상태 코드에 따라 에러 메시지 출력
           switch (err.response.status) {
             case 400:
-              alert("요청 데이터가 잘못되었습니다. 댓글을 불러오는 데 실패했습니다.");
+              alert('요청 데이터가 잘못되었습니다. 댓글을 불러오는 데 실패했습니다.');
               break;
             case 404:
-              alert("해당 게시글의 댓글을 찾을 수 없습니다.");
+              alert('해당 게시글의 댓글을 찾을 수 없습니다.');
               break;
             default:
-              alert("서버 오류가 발생했습니다.");
+              alert('서버 오류가 발생했습니다.');
           }
         } else {
-          // 서버 응답이 없는 경우
-          alert("네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+          alert('네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
         }
         console.error(err); // 상세 오류 내용 콘솔 출력
       }
@@ -75,6 +125,7 @@ function PostDetail() {
   
     fetchComments();
   }, [boardId]);
+  */
 
   const handleDelete = async () => {
     try {
@@ -113,17 +164,11 @@ function PostDetail() {
         deliveryPrice: post.deliveryPrice,
         category: post.category,
         content: post.content,
+        boardId: boardId, // 현재 게시글의 boardId 추가
       };
-
-      const response = await axios.put(
-        `https://oince.kro.kr/boards/${boardId}`,
-        updatedData,
-        { withCredentials: true }
-      );
-
-      if (response.status === 201) {
-        navigate('/edit', { state: { post } });
-      }
+  
+      // PUT 요청을 호출하지 않고 데이터만 전달
+      navigate('/edit', { state: { post: updatedData } });
     } catch (error) {
       if (error.response) {
         switch (error.response.status) {
@@ -234,14 +279,61 @@ function PostDetail() {
       </Content>
 
       <CommentContainer>
-        <h3>댓글</h3>
-        {comments.map((comment) => (
-          <div key={comment.commentId} style={{ marginBottom: '8px' }}>
-            <p>{comment.content}</p>
-            <small>{comment.date}</small>
-            <ActionButton onClick={() => handleCommentDelete(comment.commentId)}>삭제</ActionButton>
+      <h3>댓글</h3>
+      {comments.map((comment) => {
+        // UTC 시간을 한국 표준시로 변환
+        const convertToKST = (utcDate) => {
+          const date = new Date(utcDate); // UTC 시간 기준으로 Date 객체 생성
+          date.setHours(date.getHours() + 9); // UTC에 9시간 더해서 KST로 변환
+          return date.toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+          });
+        };
+
+        return (
+          <div
+            key={comment.commentId}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '8px 16px',
+              borderBottom: '1px solid #ddd',
+              marginBottom: '4px',
+              borderRadius: '4px',
+              backgroundColor: '#f9f9f9',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <p style={{ margin: 0, fontWeight: 'bold' }}>{comment.nickname}</p>
+              <small style={{ margin: 0 }}>{comment.content}</small>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <small style={{ color: '#888' }}>{convertToKST(comment.date)}</small>
+              <ActionButton
+                style={{
+                  backgroundColor: '#ff4d4f',
+                  color: 'white',
+                  border: 'none',
+                  padding: '4px 8px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                }}
+                onClick={() => handleCommentDelete(comment.commentId)}
+              >
+                삭제
+              </ActionButton>
+            </div>
           </div>
-        ))}
+        );
+      })}
+
+
 
         <form onSubmit={handleCommentSubmit} style={{ display: 'flex', flexDirection: 'column', marginTop: '16px' }}>
           <CommentInput
