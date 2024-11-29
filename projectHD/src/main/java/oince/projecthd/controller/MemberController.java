@@ -45,7 +45,6 @@ public class MemberController {
         } else {
             HttpSession session = request.getSession();
             session.setAttribute("loginMember", memberId);
-            log.info("login member={}", memberId);
             return ResponseEntity.ok(new MemberIdDto(memberId));
         }
     }
@@ -57,7 +56,7 @@ public class MemberController {
         if (session != null) {
             Integer memberId = (Integer) session.getAttribute("loginMember");
             session.invalidate();
-            log.info("logout member={}", memberId);
+            log.info("member[{}] logout", memberId);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().build();
@@ -69,6 +68,7 @@ public class MemberController {
     public ResponseEntity<?> getNickname(@RequestParam int memberId) {
         Member member = memberService.findById(memberId);
         if (member == null) {
+            log.info("member[{}] not exist", memberId);
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(member.getName());

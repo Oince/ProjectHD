@@ -23,11 +23,12 @@ public class MemberService {
 
         Member findMember = memberMapper.findByLoginId(newMember.getLoginId());
         if (findMember != null) {
+            log.info("loginId[{}] duplicate", newMember.getLoginId());
             return "duplicate";
         }
 
         memberMapper.addNewMember(newMember);
-        log.info("new member={}", newMember);
+        log.info("member[{}] created", newMember);
 
         return "ok";
     }
@@ -35,8 +36,11 @@ public class MemberService {
     public Integer login(String loginId, String password) {
         Member member = memberMapper.findByLoginId(loginId);
         if (member == null || !member.getPassword().equals(password)) {
+            log.info("member[{}] login fail", loginId);
             return null;
         }
+
+        log.info("member[{}] login", member.getMemberId());
         return member.getMemberId();
     }
 

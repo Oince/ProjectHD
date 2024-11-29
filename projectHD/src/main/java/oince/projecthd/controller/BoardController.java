@@ -30,7 +30,7 @@ public class BoardController {
                                         @SessionAttribute(name = "loginMember", required = false) Integer memberId) {
 
         if (memberId == null) {
-            log.info("세션값 없음");
+            log.info("not login");
             return ResponseEntity.status(401).build();
         }
 
@@ -64,12 +64,15 @@ public class BoardController {
 
         Board board = boardService.findById(boardId);
         if (board == null) {
+            log.info("board[{}] not exist", boardId);
             return ResponseEntity.badRequest().build();
         }
         if (memberId == null) {
+            log.info("not login");
             return ResponseEntity.status(401).build();
         }
         if (board.getMemberId() != memberId) {
+            log.info("member[{}] don't have update permission board[{}]", memberId, boardId);
             return ResponseEntity.status(403).build();
         }
 
@@ -83,12 +86,15 @@ public class BoardController {
 
         Board board = boardService.findById(boardId);
         if (board == null) {
+            log.info("board[{}] not exist", boardId);
             return ResponseEntity.badRequest().build();
         }
         if (memberId == null) {
+            log.info("not login");
             return ResponseEntity.status(401).build();
         }
         if (board.getMemberId() != memberId) {
+            log.info("member[{}] don't have delete permission board[{}]", memberId, boardId);
             return ResponseEntity.status(403).build();
         }
 
@@ -101,8 +107,10 @@ public class BoardController {
                                           @SessionAttribute(name = "loginMember", required = false) Integer memberId) {
 
         if (memberId == null) {
+            log.info("not login");
             return ResponseEntity.status(401).build();
         } else if (boardService.findById(boardId) == null) {
+            log.info("board[{}] not exist", boardId);
             return ResponseEntity.status(400).build();
         }
 

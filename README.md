@@ -41,6 +41,17 @@
 
 - 24/10/01 최초 작성
 
+
+
+## TODO
+
+- 따봉 기능
+- 조회수 2번 찍히는거 수정
+- 게시글 작성자 표시
+- 수정/삭제 버튼 권한이 있는 사용자에게만 보이게
+- 댓글 입력시 새로고침 없이 바로 나오게
+- 이미지 처리 API
+
 ## 기능
 
 - 로그인/회원가입
@@ -103,11 +114,13 @@
   - password: string
     - 최소 5글자, 최대 30글자
 - res
+  - memberId: 로그인한 사람의 memberId값
   - 세션 쿠키
     - 이름: JSESSIONID
     - 서버에서 이걸로 사용자 식별
     - **이후 모든 요청에 포함, 명세서에 없어도 항상 있어야함**
   - 성공시 200, 실패시 400
+  
 
 ### POST /logout
 
@@ -385,12 +398,12 @@ create table thumbsup_table (
     foreign key(member_id) references member(member_id) on delete cascade
 );
 
-create table file_table (
-	file_id			char(40) not null primary key,
-    member_id		int not null,
-    path			varchar(100) not null,
-    foreign key(membe_id) references member(member_id) on delete cascade;
-    foreign key()
-)
+create table file_table {
+	board_id 		int not null,
+	file_name		varchar(100) not null,
+	path			varchar(100) not null,
+	
+
+}
 ```
 

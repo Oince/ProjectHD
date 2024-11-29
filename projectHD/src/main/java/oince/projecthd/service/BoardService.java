@@ -33,7 +33,7 @@ public class BoardService {
     public int addBoard(BoardCreationDto boardCreationDto, int memberId) {
         Board board = new Board(boardCreationDto, memberId);
         boardMapper.addNewBoard(board);
-        log.info("board creation={}", board.getBoardId());
+        log.info("board[{}] created", board.getBoardId());
         return board.getBoardId();
     }
 
@@ -44,6 +44,7 @@ public class BoardService {
 
         Board board = boardMapper.findById(boardId);
         if (board == null) {
+            log.info("board[{}] not exist", boardId);
             return null;
         }
 
@@ -74,34 +75,31 @@ public class BoardService {
         board.setContent(boardCreationDto.getContent());
 
         boardMapper.updateBoard(board);
-        log.info("board update={}", board.getBoardId());
+        log.info("board[{}] updated", board.getBoardId());
     }
 
     @Transactional
     public void deleteBoard(int boardId) {
         boardMapper.deleteBoard(boardId);
-        log.info("board delete={}", boardId);
+        log.info("board[{}] deleted", boardId);
     }
 
     @Transactional
     public int thumbsUp(int boardId, int memberId) {
         ThumbsupTable byId = thumpsupTableMapper.findById(boardId, memberId);
         if (byId != null) {
+            log.info("member[{}] already thumbsup board[{}]", memberId, boardId);
             return 400;
         }
 
         boardMapper.increaseThumbsup(boardId);
         ThumbsupTable thumbsupTable = new ThumbsupTable(boardId, memberId);
         thumpsupTableMapper.addNewThumbsup(thumbsupTable);
+        log.info("member[{}] completed thumbsup board[{}]", memberId, boardId);
         return 200;
     }
 
     public Board findById(int boardId) {
         return boardMapper.findById(boardId);
     }
-
-
-
-
-
 }

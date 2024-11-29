@@ -26,11 +26,12 @@ public class CommentService {
     public int addComment(CommentCreationDto commentCreationDto, int memberId) {
         Comment comment = new Comment(commentCreationDto, memberId);
         if (comment.getParentComment() != null && commentMapper.findById(comment.getParentComment()) == null) {
+            log.info("parentComment[{}] not exist", comment.getCommentId());
             return 400;
         }
 
         commentMapper.addNewComment(comment);
-        log.info("comment creation={}", comment.getCommentId());
+        log.info("comment[{}] created", comment.getCommentId());
         return comment.getCommentId();
     }
 
@@ -38,11 +39,15 @@ public class CommentService {
     public int deleteComment(int memberId, int commentId) {
         Comment comment = commentMapper.findById(commentId);
         if (comment == null) {
+            log.info("comment[{}] not exist", commentId);
             return 400;
         }
         if (comment.getMemberId() != memberId) {
+            log.info("member[{}] don't have permission to comment[{}]", memberId, commentId);
             return 403;
         }
+
+        log.info("comment[{}] deleted", commentId);
         commentMapper.deleteComment(commentId);
         return 200;
     }
