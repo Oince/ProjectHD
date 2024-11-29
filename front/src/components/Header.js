@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { UserContext } from './UserContext';
 
 function Header() {
   const [loginId, setLoginId] = useState(''); // 아이디 입력 상태
   const [password, setPassword] = useState(''); // 비밀번호 입력 상태
   const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 관리
-  const [nickname, setNickname] = useState(''); // 로그인 시 사용자 닉네임 저장
+  const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   // 로그인 요청 핸들러
@@ -30,14 +31,11 @@ function Header() {
         setIsLoggedIn(true);
         
         const memberId = response.data.memberId; // 서버로부터 받은 memberId
-        // memberId를 통해 닉네임 가져오기
-        console.log(memberId);
-        
         try {
           const nicknameResponse = await axios.get(`https://oince.kro.kr/nickname?memberId=${memberId}`, {withCredentials: true});
-          console.log(nicknameResponse.data);
           if (nicknameResponse.status === 200) {
-            setNickname(nicknameResponse.data); // 서버로부터 받은 닉네임을 저장
+            const nickname = nicknameResponse.data;
+            setUser({ memberId, nickname }); // 사용자 정보를 Context에 저장
           }
         } catch (error) {
           if(error.response.status === 404){
@@ -67,7 +65,7 @@ function Header() {
         // 로그아웃 성공 시
         alert('로그아웃 되었습니다.');
         setIsLoggedIn(false); // 로그인 상태 해제
-        setNickname(''); // 닉네임 초기화
+        setUser({ memberId: null, nickname: '' }); // 사용자 정보 초기화
         navigate('/'); // 홈 화면으로 리다이렉트
       }
     } catch (error) {
@@ -92,7 +90,7 @@ function Header() {
       <div className="right">
         {isLoggedIn ? (
           <>
-            <span>{nickname}님 환영합니다!</span> {/* 로그인 시 닉네임 표시 */}
+            <span>{user.nickname}님 환영합니다!</span> {/* 로그인 시 닉네임 표시 */}
             <button className="logout-button" onClick={handleLogout}>로그아웃</button> {/* 로그아웃 버튼 */}
             <Link to="/write">
               <button className="write-button">글 작성</button> {/* 글 작성 버튼 */}
