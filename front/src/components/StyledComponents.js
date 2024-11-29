@@ -210,3 +210,31 @@ export const ActionButton = styled.button`
     background-color: ${props => (props.delete ? '#cc0000' : '#0056b3')};
   }
 `;
+
+//따봉 버튼
+export const ThumbsupButton = styled.button`
+  background-color: #007bff; /* 파란색 배경 */
+  color: #ffffff; /* 흰색 텍스트 */
+  border: none; /* 테두리 제거 */
+  padding: 10px 20px; /* 버튼의 안쪽 여백 */
+  border-radius: 8px; /* 버튼 모서리 둥글게 */
+  font-size: 16px; /* 글자 크기 */
+  font-weight: bold; /* 글자 두껍게 */
+  cursor: pointer; /* 마우스 포인터 변경 */
+  transition: all 0.3s ease; /* 호버 효과 전환 부드럽게 */
+
+  &:hover {
+    background-color: #0056b3; /* 더 진한 파란색으로 변경 */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 살짝 입체감 */
+  }
+
+  &:active {
+    background-color: #003f7f; /* 클릭 시 더 어두운 파란색 */
+    transform: scale(0.95); /* 살짝 눌린 효과 */
+  }
+
+  &:disabled {
+    background-color: #cccccc; /* 비활성화 상태의 회색 */
+    cursor: not-allowed; /* 비활성화 상태의 포인터 */
+  }
+`;

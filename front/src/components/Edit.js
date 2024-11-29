@@ -38,6 +38,7 @@ function Edit() {
 
   console.log(post.boardId);
 
+  //게시글 수정
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {

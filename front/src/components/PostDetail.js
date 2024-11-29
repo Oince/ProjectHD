@@ -11,7 +11,8 @@ import {
   ActionButton,
   CommentContainer,
   CommentInput,
-  CommentButton
+  CommentButton,
+  ThumbsupButton
 } from './StyledComponents';
 
 function PostDetail() {
@@ -23,18 +24,22 @@ function PostDetail() {
   const [newComment, setNewComment] = useState("");
   const [error, setError] = useState(null);
 
+  //게시글 입력 상태, 댓글 상태 리턴
   useEffect(() => {
     const fetchPostAndComments = async () => {
       try {
+        //게시글 상태 리턴
         const postResponse = await axios.get(`https://oince.kro.kr/boards/${boardId}`);
         
         if (postResponse.status === 200) {
           setPost(postResponse.data);
         }
         
+        //댓글들 리턴
         const commentsResponse = await axios.get(`https://oince.kro.kr/comments?boardId=${boardId}`, {
           withCredentials: true,
         });
+        //각 댓글 들에서 닉네임 가져오기
         if (commentsResponse.status === 200) {
           const commentsWithNicknames = await Promise.all(
             commentsResponse.data.map(async (comment) => {
@@ -71,62 +76,7 @@ function PostDetail() {
     fetchPostAndComments();
   }, [boardId]);
 
-  // Fetch comments
-
-    // Fetch comments with nicknames
-  /*
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const commentsResponse = await axios.get(`https://oince.kro.kr/comments?boardId=${boardId}`, {
-          withCredentials: true,
-        });
-        if (commentsResponse.status === 200) {
-          const commentsWithNicknames = await Promise.all(
-            commentsResponse.data.map(async (comment) => {
-              try {
-                const nicknameResponse = await axios.get(
-                  `https://oince.kro.kr/nickname?memberId=${comment.memberId}`,
-                  { withCredentials: true }
-                );
-                return {
-                  ...comment,
-                  nickname: nicknameResponse.data || '알 수 없음', // 닉네임 설정
-                };
-              } catch (error) {
-                console.error(`Failed to fetch nickname for memberId ${comment.memberId}:`, error);
-                return {
-                  ...comment,
-                  nickname: '알 수 없음', // 실패 시 기본 닉네임 설정
-                };
-              }
-            })
-          );
-          setComments(commentsWithNicknames);
-        }
-      } catch (err) {
-        if (err.response) {
-          switch (err.response.status) {
-            case 400:
-              alert('요청 데이터가 잘못되었습니다. 댓글을 불러오는 데 실패했습니다.');
-              break;
-            case 404:
-              alert('해당 게시글의 댓글을 찾을 수 없습니다.');
-              break;
-            default:
-              alert('서버 오류가 발생했습니다.');
-          }
-        } else {
-          alert('네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
-        }
-        console.error(err); // 상세 오류 내용 콘솔 출력
-      }
-    };
-  
-    fetchComments();
-  }, [boardId]);
-  */
-
+  //게시글 삭제
   const handleDelete = async () => {
     try {
       const response = await axios.delete(`https://oince.kro.kr/boards/${boardId}`, { withCredentials: true });
@@ -154,6 +104,7 @@ function PostDetail() {
     }
   };
 
+  //게시글 수정
   const handleEdit = async () => {
     try {
       const updatedData = {
@@ -188,7 +139,7 @@ function PostDetail() {
     }
   };
 
-  // Handle comment submission
+  // 댓글 작성
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -223,7 +174,7 @@ function PostDetail() {
     }
   };
 
-    // Handle comment deletion
+  //댓글 삭제
   const handleCommentDelete = async (commentId) => {
     try {
       const response = await axios.delete(`https://oince.kro.kr/comments/${commentId}`, { withCredentials: true });
@@ -249,6 +200,32 @@ function PostDetail() {
     }
   };
 
+  //좋아요 올라가기
+  const handleThumbsup = async () => {
+    try {
+      const response = await axios.post(`https://oince.kro.kr/boards/${boardId}/thumbsup`, null, {
+        withCredentials: true,
+      });
+      if (response.status === 200) {
+        setPost((prev) => ({ ...prev, thumbsup: prev.thumbsup + 1 })); // 따봉 값 증가
+      }
+    } catch (error) {
+      if (error.response) {
+        switch (error.response.status) {
+          case 400:
+            alert('요청 데이터가 잘못되었습니다.');
+            break;
+          case 401:
+            alert('로그인이 필요합니다.');
+            break;
+          default:
+            alert('서버 오류가 발생했습니다.');
+        }
+      }
+    }
+  };
+
+
 
   if (error) {
     return <PostContainer>{error}</PostContainer>;
@@ -270,13 +247,18 @@ function PostDetail() {
       <Info><strong>배송비:</strong> {post.deliveryPrice}원</Info>
       <Info><strong>카테고리:</strong> {post.category}</Info>
       <Info><strong>작성일:</strong> {post.date}</Info>
-      <Info><strong>좋아요:</strong> {post.thumbsup}</Info>
       <Info><strong>조회수:</strong> {post.views}</Info>
       <Info><strong>URL:</strong> <UrlLink href={post.url} target="_blank" rel="noopener noreferrer">{post.url}</UrlLink></Info>
       <Content>
         <strong>내용:</strong>
         <p>{post.content}</p>
       </Content>
+
+      {/* Thumbsup Button */}
+      <div style={{ textAlign: 'center', margin: '16px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+        <ThumbsupButton onClick={handleThumbsup}>👍 따봉</ThumbsupButton>
+        <span style={{ fontSize: '16px', fontWeight: 'bold' }}>{post.thumbsup}</span>
+      </div>
 
       <CommentContainer>
       <h3>댓글</h3>
