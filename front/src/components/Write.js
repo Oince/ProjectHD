@@ -52,10 +52,6 @@ function Write() {
       if (response.status === 201) {
         setMessage("글 작성이 완료되었습니다!");
         
-        //const postUrl = response.headers.location;
-        //const url = 'https://oince.kro.kr'+postUrl;
-        //window.location.href = url;
-        //navigate(postUrl);
         const postUrl = response.headers.location;
         const postId = postUrl.split('/').pop();  // Extract the postId from the URL path
         navigate(`/boards/${postId}`);
