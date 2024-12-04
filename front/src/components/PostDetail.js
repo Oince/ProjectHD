@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { UserContext } from './UserContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   PostContainer,
@@ -19,7 +18,7 @@ import {
 function PostDetail() {
   const { boardId } = useParams();
   const navigate = useNavigate();
-  const { user } = useContext(UserContext); // 로그인한 사용자 정보 가져오기
+  
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
@@ -140,39 +139,24 @@ function PostDetail() {
     }
   };
 
+  // 댓글 작성
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-  
-    if (!newComment.trim()) {
-      alert("댓글 내용을 입력해주세요.");
-      return;
-    }
-  
     try {
-      // 댓글 등록 요청
       const response = await axios.post(
         'https://oince.kro.kr/comments',
         {
           boardId: boardId,
-          parentComment: null, // 기본 댓글
+          parentComment: null, // 기본 댓글로 설정, 대댓글 기능 추가 시 수정
           content: newComment,
         },
         { withCredentials: true }
       );
-  
-      if (response.status === 201) {
-        // 성공적으로 등록되었을 경우
+
+      if (response.status === 200) {
         alert("댓글 입력에 성공했습니다.");
-        const commentUrl = response.headers.location; // Location 헤더에서 URL 가져오기
-        
-        console.log(commentUrl);
-        // 새로 등록된 댓글 가져오기
-        const commentResponse = await axios.get(`https://oince.kro.kr${commentUrl}`, { withCredentials: true });
-  
-        if (commentResponse.status === 200) {
-          setComments([...comments, commentResponse.data]); // 댓글 상태에 추가
-          setNewComment(""); // 입력창 초기화
-        }
+        setComments([...comments, response.data]); // 새 댓글 추가
+        setNewComment(""); // 입력창 초기화
       }
     } catch (error) {
       if (error.response) {
@@ -186,12 +170,9 @@ function PostDetail() {
           default:
             alert("서버 오류가 발생했습니다.");
         }
-      } else {
-        alert("댓글 등록에 실패했습니다.");
       }
     }
   };
-  
 
   //댓글 삭제
   const handleCommentDelete = async (commentId) => {
@@ -256,12 +237,10 @@ function PostDetail() {
 
   return (
     <PostContainer>
-      {user.memberId === post.memberId && (
-        <ButtonContainer>
+      <ButtonContainer>
         <ActionButton onClick={handleEdit}>수정</ActionButton>
         <ActionButton onClick={handleDelete}>삭제</ActionButton>
       </ButtonContainer>
-      )}
       <PostTitle>{post.title}</PostTitle>
       <Info><strong>상품명:</strong> {post.itemName}</Info>
       <Info><strong>가격:</strong> {post.price}원</Info>
@@ -318,8 +297,7 @@ function PostDetail() {
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <small style={{ color: '#888' }}>{convertToKST(comment.date)}</small>
-              {user.memberId === comment.memberId && (
-                <ActionButton
+              <ActionButton
                 style={{
                   backgroundColor: '#ff4d4f',
                   color: 'white',
@@ -332,7 +310,6 @@ function PostDetail() {
               >
                 삭제
               </ActionButton>
-              )}
             </div>
           </div>
         );
