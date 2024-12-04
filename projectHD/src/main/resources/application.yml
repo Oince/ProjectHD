@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/projecthd?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    username: oince
+    password: gozldgkwlak1@
+
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: /mappers/*.xml
+
