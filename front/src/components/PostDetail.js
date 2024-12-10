@@ -154,7 +154,7 @@ function PostDetail() {
         { withCredentials: true }
       );
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         alert("댓글 입력에 성공했습니다.");
         const commentUrl = response.headers.location; // Location 헤더에서 URL 가져오기
         
