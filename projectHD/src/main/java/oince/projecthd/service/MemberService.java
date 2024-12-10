@@ -33,7 +33,7 @@ public class MemberService {
         return "ok";
     }
 
-    public Integer login(String loginId, String password) {
+    public Member login(String loginId, String password) {
         Member member = memberMapper.findByLoginId(loginId);
         if (member == null || !member.getPassword().equals(password)) {
             log.info("member[{}] login fail", loginId);
@@ -41,7 +41,7 @@ public class MemberService {
         }
 
         log.info("member[{}] login", member.getMemberId());
-        return member.getMemberId();
+        return member;
     }
 
     public Member findById(int id) {

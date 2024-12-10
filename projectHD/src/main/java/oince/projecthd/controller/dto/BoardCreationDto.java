@@ -37,4 +37,6 @@ public class BoardCreationDto {
     @NotBlank
     @Size(max = 1000)
     private String content;
+
+
 }

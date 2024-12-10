@@ -21,6 +21,7 @@ public class BoardHomeDto {
     private int deliveryPrice;
     private String category;
     private String date;
+    private int views;
     private int thumbsup;
 
     public BoardHomeDto(Board board, String name, Integer numberOfComment) {
@@ -35,6 +36,7 @@ public class BoardHomeDto {
         this.deliveryPrice = board.getDeliveryPrice();
         this.category = board.getCategory().toString();
         this.date = board.getDate().format(formatter);
+        this.views = board.getViews();
         this.thumbsup = board.getThumbsup();
     }
 }

@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberIdDto {
     private int memberId;
+    private String name;
 }

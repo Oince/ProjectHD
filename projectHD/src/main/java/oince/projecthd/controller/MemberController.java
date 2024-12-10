@@ -39,13 +39,13 @@ public class MemberController {
     @PostMapping("/login")
     public ResponseEntity<MemberIdDto> postLogin(@Valid @RequestBody LoginDto loginDto, HttpServletRequest request, HttpServletResponse response) {
 
-        Integer memberId = memberService.login(loginDto.getLoginId(), loginDto.getPassword());
-        if (memberId == null) {
+        Member member = memberService.login(loginDto.getLoginId(), loginDto.getPassword());
+        if (member == null) {
             return ResponseEntity.badRequest().build();
         } else {
             HttpSession session = request.getSession();
-            session.setAttribute("loginMember", memberId);
-            return ResponseEntity.ok(new MemberIdDto(memberId));
+            session.setAttribute("loginMember", member.getMemberId());
+            return ResponseEntity.ok(new MemberIdDto(member.getMemberId(), member.getName()));
         }
     }
 
