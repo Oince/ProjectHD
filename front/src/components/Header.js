@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { UserContext } from './UserContext';
 
@@ -8,7 +8,6 @@ function Header() {
   const [password, setPassword] = useState(''); // 비밀번호 입력 상태
   const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 관리
   const { user, setUser } = useContext(UserContext);
-  const navigate = useNavigate();
 
   // 로그인 요청 핸들러
   const handleLogin = async () => {
