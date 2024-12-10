@@ -63,14 +63,4 @@ public class MemberController {
         }
 
     }
-
-    @GetMapping("/nickname")
-    public ResponseEntity<?> getNickname(@RequestParam int memberId) {
-        Member member = memberService.findById(memberId);
-        if (member == null) {
-            log.info("member[{}] not exist", memberId);
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(member.getName());
-    }
 }

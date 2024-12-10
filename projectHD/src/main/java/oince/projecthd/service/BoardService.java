@@ -7,6 +7,7 @@ import oince.projecthd.controller.dto.BoardDto;
 import oince.projecthd.controller.dto.BoardHomeDto;
 import oince.projecthd.domain.Board;
 import oince.projecthd.domain.Comment;
+import oince.projecthd.domain.Member;
 import oince.projecthd.domain.ThumbsupTable;
 import oince.projecthd.mapper.BoardMapper;
 import oince.projecthd.mapper.CommentMapper;
@@ -15,6 +16,7 @@ import oince.projecthd.mapper.ThumpsupTableMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -47,16 +49,18 @@ public class BoardService {
             log.info("board[{}] not exist", boardId);
             return null;
         }
+        Member member = memberMapper.findById(board.getMemberId());
 
         int numberOfComment = commentMapper.numberOfComment(boardId);
-        return new BoardDto(board, numberOfComment);
+        return new BoardDto(board, member.getName(), numberOfComment);
     }
 
     public List<BoardHomeDto> getBoards() {
         List<Board> boards = boardMapper.findAll();
-        List<BoardHomeDto> res = new LinkedList<>();
+        List<BoardHomeDto> res = new ArrayList<>();
         for (Board board : boards) {
-            res.add(new BoardHomeDto(board, commentMapper.numberOfComment(board.getBoardId())));
+            String name = memberMapper.findById(board.getMemberId()).getName();
+            res.add(new BoardHomeDto(board, name, commentMapper.numberOfComment(board.getBoardId())));
         }
 
         return res;

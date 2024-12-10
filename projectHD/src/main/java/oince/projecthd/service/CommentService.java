@@ -3,11 +3,16 @@ package oince.projecthd.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oince.projecthd.controller.dto.CommentCreationDto;
+import oince.projecthd.controller.dto.CommentDto;
 import oince.projecthd.domain.Comment;
+import oince.projecthd.domain.Member;
+import oince.projecthd.exception.NotFoundException;
 import oince.projecthd.mapper.CommentMapper;
+import oince.projecthd.mapper.MemberMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -17,9 +22,17 @@ import java.util.List;
 public class CommentService {
 
     private final CommentMapper commentMapper;
+    private final MemberMapper memberMapper;
 
-    public List<Comment> getComments(int boardId) {
-        return commentMapper.findByBoardId(boardId);
+    public List<CommentDto> getComments(int boardId) {
+
+        List<Comment> commentList = commentMapper.findByBoardId(boardId);
+        List<CommentDto> commentDtoList = new ArrayList<>();
+        for (Comment comment : commentList) {
+            String name = memberMapper.findById(comment.getMemberId()).getName();
+            commentDtoList.add(new CommentDto(comment, name));
+        }
+        return commentDtoList;
     }
 
     @Transactional
@@ -52,7 +65,12 @@ public class CommentService {
         return 200;
     }
 
-    public Comment getComment(int commentId) {
-        return commentMapper.findById(commentId);
+    public CommentDto getComment(int commentId) {
+        Comment comment = commentMapper.findById(commentId);
+        if (comment == null) {
+            throw new NotFoundException("not exist comment=" + commentId);
+        }
+        String name = memberMapper.findById(comment.getMemberId()).getName();
+        return new CommentDto(comment, name);
     }
 }

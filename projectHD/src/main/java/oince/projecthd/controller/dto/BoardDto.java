@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 public class BoardDto {
     private int boardId;
     private int memberId;
+    private String name;
     private String title;
     private int numberOfComment;
     private int price;
@@ -23,11 +24,12 @@ public class BoardDto {
     private String url;
     private String content;
 
-    public BoardDto(Board board, int numberOfComment) {
+    public BoardDto(Board board, String name, int numberOfComment) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
 
         this.boardId = board.getBoardId();
         this.memberId = board.getMemberId();
+        this.name = name;
         this.title = board.getTitle();
         this.numberOfComment = numberOfComment;
         this.price = board.getPrice();

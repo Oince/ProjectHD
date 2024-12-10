@@ -6,6 +6,10 @@
 
 ## 문서 수정사항
 
+- 24/12/10
+  - 글과 댓글 목록 GET할 때 작성자의 이름도 같이 넘겨주는거로 변경
+  - GET  /nickname 삭제
+
 - 24/11/15
   - GET /comments -> GET /comment?boardId= 로 변경
   - GET /comments/{commentId} 추가
@@ -45,11 +49,9 @@
 
 ## TODO
 
-- 따봉 기능
 - 조회수 2번 찍히는거 수정
 - 게시글 작성자 표시
-- 수정/삭제 버튼 권한이 있는 사용자에게만 보이게
-- 댓글 입력시 새로고침 없이 바로 나오게
+- 댓글 입력시 새로고침 없이 바로 나오게(닉네임은 바로 안나옴)
 - 이미지 처리 API
 
 ## 기능
@@ -114,13 +116,12 @@
   - password: string
     - 최소 5글자, 최대 30글자
 - res
-  - memberId: 로그인한 사람의 memberId값
   - 세션 쿠키
     - 이름: JSESSIONID
     - 서버에서 이걸로 사용자 식별
     - **이후 모든 요청에 포함, 명세서에 없어도 항상 있어야함**
+  - 바디에 사용자 이름
   - 성공시 200, 실패시 400
-  
 
 ### POST /logout
 
@@ -130,16 +131,6 @@
 - res
   - 성공시 200 리턴
   - 세션이 없으면 400 리턴
-
-### GET /nickname?memberId=
-
-memberId에 해당하는 닉네임 돌려주는 api
-
-- req: 없음
-- res
-  - nickname: 닉네임
-  - 성공시 200
-  - memberId가 없는 경우에 404
 
 
 ### GET /boards
@@ -152,6 +143,8 @@ memberId에 해당하는 닉네임 돌려주는 api
     - 게시글 id
   - memberId: int
     - 게시글 작성자 식별 id
+  - name: string
+    - 게시글 작성자 닉네임
   - title: string
     - 제목
   - numberOfComment: int
@@ -177,6 +170,7 @@ memberId에 해당하는 닉네임 돌려주는 api
 - res
   - boardId: int
   - memberId: int
+  - name: string
   - title: string
   - numberOfComment: int
   - price: int
@@ -284,13 +278,15 @@ memberId에 해당하는 닉네임 돌려주는 api
     - 댓글이 달려있는 게시글 id
   - memberId: int
     - 댓글 작성자 식별 id
+  - name: string
+    - 댓글 작성자 닉네임
   - parendComment: int
     - 대댓글인 경우 부모 댓글의 id, 대댓글 아니면 null
   - date: string
     - 댓글 생성 날짜
   - content:string
     - 댓글 내용
-
+  
   - 성공시 200
   - commentId에 해당하는 댓글이 없으면 404
 
@@ -306,6 +302,8 @@ memberId에 해당하는 닉네임 돌려주는 api
     - 댓글이 달려있는 게시글 id
   - memberId: int
     - 댓글 작성자 식별 id
+  - name: string
+    - 댓글 작성자 닉네임
   - parendComment: int
     - 대댓글인 경우 부모 댓글의 id, 대댓글 아니면 null
   - date: string
@@ -348,6 +346,12 @@ memberId에 해당하는 닉네임 돌려주는 api
     - 요청 데이터가 잘못된 경우: 400
     - 세션이 없을 경우: 401
     - 삭제 권한이 없을 경우: 403
+
+### GET /images/
+
+### POST /images
+
+​	
 
 
 
@@ -397,13 +401,5 @@ create table thumbsup_table (
   	foreign key(board_id) references board(board_id) on delete cascade,
     foreign key(member_id) references member(member_id) on delete cascade
 );
-
-create table file_table {
-	board_id 		int not null,
-	file_name		varchar(100) not null,
-	path			varchar(100) not null,
-	
-
-}
 ```
 

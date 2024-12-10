@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oince.projecthd.controller.dto.CommentCreationDto;
+import oince.projecthd.controller.dto.CommentDto;
 import oince.projecthd.domain.Comment;
 import oince.projecthd.service.CommentService;
 import org.springframework.http.ResponseEntity;
@@ -19,16 +20,17 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
+    
 
     @GetMapping
-    public ResponseEntity<List<Comment>> getComments(@RequestParam int boardId) {
-        List<Comment> comments = commentService.getComments(boardId);
+    public ResponseEntity<List<CommentDto>> getComments(@RequestParam int boardId) {
+        List<CommentDto> comments = commentService.getComments(boardId);
         return ResponseEntity.ok(comments);
     }
 
     @GetMapping("/{commentId}")
-    public ResponseEntity<Comment> getComment(@PathVariable(value = "commentId") int commentId) {
-        Comment comment = commentService.getComment(commentId);
+    public ResponseEntity<CommentDto> getComment(@PathVariable(value = "commentId") int commentId) {
+        CommentDto comment = commentService.getComment(commentId);
         return ResponseEntity.ok(comment);
     }
 
