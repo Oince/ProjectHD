@@ -31,21 +31,9 @@ function Header() {
         setIsLoggedIn(true);
         
         const memberId = response.data.memberId; // 서버로부터 받은 memberId
-        
-        try {
-          const nicknameResponse = await axios.get(`https://oince.kro.kr/nickname?memberId=${memberId}`, {withCredentials: true});
-          if (nicknameResponse.status === 200) {
-            const nickname = nicknameResponse.data;
-            setUser({ memberId, nickname }); // 사용자 정보를 Context에 저장
-          }
-        } catch (error) {
-          if(error.response.status === 404){
-            alert("멤버 ID가 없습니다.");
-          }
-          alert('닉네임을 불러오는 데 실패했습니다.');
-        }
-
-        navigate('/'); // 홈 화면으로 리다이렉트
+        const nickname = response.data.name;
+        setUser({ memberId, nickname }); // 사용자 정보를 Context에 저장
+        //navigate('/'); // 홈 화면으로 리다이렉트
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
@@ -67,7 +55,7 @@ function Header() {
         alert('로그아웃 되었습니다.');
         setIsLoggedIn(false); // 로그인 상태 해제
         setUser({ memberId: null, nickname: '' }); // 사용자 정보 초기화
-        navigate('/'); // 홈 화면으로 리다이렉트
+        //navigate('/'); // 홈 화면으로 리다이렉트
       }
     } catch (error) {
       if(error.response.status === 400){

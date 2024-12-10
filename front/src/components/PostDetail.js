@@ -40,31 +40,11 @@ function PostDetail() {
         const commentsResponse = await axios.get(`https://oince.kro.kr/comments?boardId=${boardId}`, {
           withCredentials: true,
         });
-        //각 댓글 들에서 닉네임 가져오기
+
         if (commentsResponse.status === 200) {
-          const commentsWithNicknames = await Promise.all(
-            commentsResponse.data.map(async (comment) => {
-              try {
-                const nicknameResponse = await axios.get(
-                  `https://oince.kro.kr/nickname?memberId=${comment.memberId}`,
-                  { withCredentials: true }
-                );
-                return {
-                  ...comment,
-                  nickname: nicknameResponse.data || '알 수 없음', // 닉네임 설정
-                };
-              } catch (error) {
-                console.error(`Failed to fetch nickname for memberId ${comment.memberId}:`, error);
-                return {
-                  ...comment,
-                  nickname: '알 수 없음', // 실패 시 기본 닉네임 설정
-                };
-              }
-            })
-          );
-          setComments(commentsWithNicknames);
+          
+          setComments(commentsResponse.data);
         }
-        
       } catch (err) {
         if (err.response && err.response.status === 404) {
           setError("게시글을 찾을 수 없습니다.");
@@ -157,8 +137,6 @@ function PostDetail() {
       if (response.status === 201) {
         alert("댓글 입력에 성공했습니다.");
         const commentUrl = response.headers.location; // Location 헤더에서 URL 가져오기
-        
-        console.log(commentUrl);
         // 새로 등록된 댓글 가져오기
         const commentResponse = await axios.get(`https://oince.kro.kr${commentUrl}`, { withCredentials: true });
   
@@ -191,6 +169,7 @@ function PostDetail() {
     try {
       const response = await axios.delete(`https://oince.kro.kr/comments/${commentId}`, { withCredentials: true });
       if (response.status === 200) {
+        alert("댓글이 삭제 되었습니다.");
         setComments(comments.filter(comment => comment.commentId !== commentId));
       }
     } catch (error) {
@@ -256,6 +235,7 @@ function PostDetail() {
         </ButtonContainer>
       )}
       <PostTitle>{post.title}</PostTitle>
+      <Info><strong>작성자:</strong> {post.name}</Info>
       <Info><strong>상품명:</strong> {post.itemName}</Info>
       <Info><strong>가격:</strong> {post.price}원</Info>
       <Info><strong>배송비:</strong> {post.deliveryPrice}원</Info>
@@ -306,7 +286,7 @@ function PostDetail() {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <p style={{ margin: 0, fontWeight: 'bold' }}>{comment.nickname}</p>
+              <p style={{ margin: 0, fontWeight: 'bold' }}>{comment.name}</p>
               <small style={{ margin: 0 }}>{comment.content}</small>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -330,8 +310,6 @@ function PostDetail() {
           </div>
         );
       })}
-
-
 
         <form onSubmit={handleCommentSubmit} style={{ display: 'flex', flexDirection: 'column', marginTop: '16px' }}>
           <CommentInput

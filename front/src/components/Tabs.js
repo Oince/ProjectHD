@@ -117,7 +117,7 @@ const Tabs = () => {
           <PostItem key={post.boardId} onClick={() => handlePostClick(post.boardId)}>
             <PostTitle>{post.title}</PostTitle>
             <PostDetails>
-              작성자 ID: {post.memberId} | 댓글: {post.numberOfComment} | 가격: {post.price}원 | 배달비: {post.deliveryPrice}원
+              작성자: {post.name} | 댓글: {post.numberOfComment} | 가격: {post.price}원 | 배달비: {post.deliveryPrice}원
               <br />
               날짜: {new Date(post.date).toLocaleDateString()} | 좋아요: {post.thumbsup} | 조회수: {post.views}
             </PostDetails>
