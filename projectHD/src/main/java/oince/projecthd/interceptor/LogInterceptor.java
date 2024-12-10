@@ -31,7 +31,7 @@ public class LogInterceptor implements HandlerInterceptor {
 
         String method = request.getMethod();
 
-        log.info("{}: COMPLETE {} {}", logId, method, requestURI);
+        log.info("{}: COMPLETE {} {} {}", logId, method, requestURI, response.getStatus());
 
     }
 

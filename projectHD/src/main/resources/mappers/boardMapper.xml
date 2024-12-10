@@ -11,9 +11,27 @@
         select * from board where board_id=#{boardId}
     </select>
 
+    <select id="findAll" resultType="oince.projecthd.domain.Board">
+        select * from board
+    </select>
+
     <update id="increaseViews">
         update board set views=views+1 where board_id=#{boardId}
     </update>
+
+    <update id="increaseThumbsup">
+        update board set thumbsup=thumbsup+1 where board_id=#{boardId}
+    </update>
+
+    <update id="updateBoard" parameterType="oince.projecthd.domain.Board">
+        update board set title=#{title}, url=#{url}, item_name=#{itemName}, price=#{price},
+                         delivery_price=#{deliveryPrice}, category=#{category}, content=#{content}
+        where board_id=#{boardId}
+    </update>
+
+    <delete id="deleteBoard">
+        delete from board where board_id=#{boardId}
+    </delete>
 
 
 </mapper>

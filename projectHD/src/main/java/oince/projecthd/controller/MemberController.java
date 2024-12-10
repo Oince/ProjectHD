@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oince.projecthd.controller.dto.LoginDto;
+import oince.projecthd.controller.dto.MemberIdDto;
 import oince.projecthd.controller.dto.SignupDto;
 import oince.projecthd.domain.Member;
 import oince.projecthd.service.MemberService;
@@ -36,17 +37,15 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> postLogin(@Valid @RequestBody LoginDto loginDto, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<MemberIdDto> postLogin(@Valid @RequestBody LoginDto loginDto, HttpServletRequest request, HttpServletResponse response) {
 
-        Integer memberId = memberService.login(loginDto.getLoginId(), loginDto.getPassword());
-        if (memberId == null) {
+        Member member = memberService.login(loginDto.getLoginId(), loginDto.getPassword());
+        if (member == null) {
             return ResponseEntity.badRequest().build();
         } else {
             HttpSession session = request.getSession();
-            //response.addCookie(new Cookie("memberId", memberId.toString()));
-            session.setAttribute("loginMember", memberId);
-            log.info("login member={}", memberId);
-            return ResponseEntity.ok().build();
+            session.setAttribute("loginMember", member.getMemberId());
+            return ResponseEntity.ok(new MemberIdDto(member.getMemberId(), member.getName()));
         }
     }
 
@@ -55,22 +54,13 @@ public class MemberController {
         HttpSession session = request.getSession(false);
 
         if (session != null) {
-            Member member = (Member) session.getAttribute("loginMember");
+            Integer memberId = (Integer) session.getAttribute("loginMember");
             session.invalidate();
-            log.info("logout member={}", member);
+            log.info("member[{}] logout", memberId);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().build();
         }
 
-    }
-
-    @GetMapping("/nickname/{memberId}")
-    public ResponseEntity<?> getNickname(@PathVariable int memberId) {
-        Member member = memberService.findById(memberId);
-        if (member == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(member.getName());
     }
 }

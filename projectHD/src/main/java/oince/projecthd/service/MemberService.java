@@ -23,21 +23,25 @@ public class MemberService {
 
         Member findMember = memberMapper.findByLoginId(newMember.getLoginId());
         if (findMember != null) {
+            log.info("loginId[{}] duplicate", newMember.getLoginId());
             return "duplicate";
         }
 
         memberMapper.addNewMember(newMember);
-        log.info("new member={}", newMember);
+        log.info("member[{}] created", newMember);
 
         return "ok";
     }
 
-    public Integer login(String loginId, String password) {
+    public Member login(String loginId, String password) {
         Member member = memberMapper.findByLoginId(loginId);
         if (member == null || !member.getPassword().equals(password)) {
+            log.info("member[{}] login fail", loginId);
             return null;
         }
-        return member.getMemberId();
+
+        log.info("member[{}] login", member.getMemberId());
+        return member;
     }
 
     public Member findById(int id) {
