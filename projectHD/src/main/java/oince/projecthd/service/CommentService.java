@@ -68,7 +68,7 @@ public class CommentService {
     public CommentDto getComment(int commentId) {
         Comment comment = commentMapper.findById(commentId);
         if (comment == null) {
-            throw new NotFoundException("not exist comment=" + commentId);
+            return null;
         }
         String name = memberMapper.findById(comment.getMemberId()).getName();
         return new CommentDto(comment, name);

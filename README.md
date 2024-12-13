@@ -6,6 +6,9 @@
 
 ## 문서 수정사항
 
+- 24/12/12 
+  - 이미지 업로드&다운로드 api 추가
+
 - 24/12/10
   - 글과 댓글 목록 GET할 때 작성자의 이름도 같이 넘겨주는거로 변경
   - GET  /nickname 삭제
@@ -49,9 +52,6 @@
 
 ## TODO
 
-- 조회수 2번 찍히는거 수정
-- 게시글 작성자 표시
-- 댓글 입력시 새로고침 없이 바로 나오게(닉네임은 바로 안나옴)
 - 이미지 처리 API
 
 ## 기능
@@ -349,12 +349,29 @@
     - 세션이 없을 경우: 401
     - 삭제 권한이 없을 경우: 403
 
-### GET /images/
+### GET /files/{fileName}
 
-### POST /images
+파일 가져오는 api
 
-​	
+- 파일 없으면 404
+- 있으면 내려줌
 
+### POST /files
+
+파일 등록하는 api
+
+- req
+  - boardId: int
+    - 파일이 포함될 게시글의 id
+  
+  - file
+    - 첨부하려는 파일
+  
+- res
+  - 성공시 201 + Location 필드에 생성된 파일의 url
+  - 없는 게시글이거나 빈 파일이면 400
+  - 로그인 안되어있으면 401
+  - 자신의 게시글이 아니면 403
 
 
 ## 테이블
@@ -402,6 +419,11 @@ create table thumbsup_table (
     primary key(board_id, member_id),
   	foreign key(board_id) references board(board_id) on delete cascade,
     foreign key(member_id) references member(member_id) on delete cascade
+);
+
+create table upload_file(
+	store_file_name		varchar(50) primary key,
+    upload_file_name	varchar(50) not null
 );
 ```
 

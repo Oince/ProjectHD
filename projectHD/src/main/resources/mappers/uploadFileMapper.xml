@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="oince.projecthd.mapper.UploadFileMapper">
+
+    <select id="selectFile">
+        select * from upload_file where store_file_name=#{fileName}
+    </select>
+
+    <insert id="insertFile" parameterType="oince.projecthd.domain.UploadFile">
+        insert into upload_file values(#{storeFileName}, #{uploadFileName})
+    </insert>
+
+</mapper>

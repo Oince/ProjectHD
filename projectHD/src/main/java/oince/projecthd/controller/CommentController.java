@@ -7,6 +7,7 @@ import oince.projecthd.controller.dto.CommentCreationDto;
 import oince.projecthd.controller.dto.CommentDto;
 import oince.projecthd.domain.Comment;
 import oince.projecthd.service.CommentService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,9 @@ public class CommentController {
     @GetMapping("/{commentId}")
     public ResponseEntity<CommentDto> getComment(@PathVariable(value = "commentId") int commentId) {
         CommentDto comment = commentService.getComment(commentId);
+        if (comment == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
         return ResponseEntity.ok(comment);
     }
 
