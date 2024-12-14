@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import oince.projecthd.controller.annotation.LoginCheck;
 import oince.projecthd.controller.dto.FileDto;
 import oince.projecthd.domain.Board;
 import oince.projecthd.domain.UploadFile;
@@ -53,6 +54,7 @@ public class FileController {
     }
 
     @PostMapping("/files")
+    @LoginCheck
     public ResponseEntity<?> postFile(@ModelAttribute @Valid FileDto fileDto,
                                       @SessionAttribute(name = "loginMember", required = false) Integer memberId) {
 
@@ -63,10 +65,6 @@ public class FileController {
         if(board == null) {
             log.info("not exist board[{}]", boardId);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        if (memberId == null) {
-            log.info("not login");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         if (board.getMemberId() != memberId) {
             log.info("member[{}] don't have upload permission to board[{}]", memberId, boardId);

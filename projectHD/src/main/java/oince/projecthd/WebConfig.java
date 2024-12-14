@@ -4,6 +4,7 @@ package oince.projecthd;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import oince.projecthd.interceptor.LogInterceptor;
+import oince.projecthd.interceptor.LoginCheckInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -17,6 +18,12 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new LogInterceptor())
                 .order(1)
                 .addPathPatterns("/**");
+
+        registry.addInterceptor(new LoginCheckInterceptor())
+                .addPathPatterns("/**")
+                .order(2)
+                .excludePathPatterns("/", "/error", "/css/**", "/login", "logout", "signup");
+
 
         registry.addInterceptor(new HandlerInterceptor() {
             @Override

@@ -3,6 +3,7 @@ package oince.projecthd.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import oince.projecthd.controller.annotation.LoginCheck;
 import oince.projecthd.controller.dto.BoardCreationDto;
 import oince.projecthd.controller.dto.BoardDto;
 import oince.projecthd.controller.dto.BoardHomeDto;
@@ -26,13 +27,10 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping
+    @LoginCheck
     public ResponseEntity<?> postBoards(@Valid @RequestBody BoardCreationDto boardCreationDto,
                                         @SessionAttribute(name = "loginMember", required = false) Integer memberId) {
 
-        if (memberId == null) {
-            log.info("not login");
-            return ResponseEntity.status(401).build();
-        }
 
         int boardId = boardService.addBoard(boardCreationDto, memberId);
 
@@ -58,6 +56,7 @@ public class BoardController {
     }
 
     @PutMapping("/{boardId}")
+    @LoginCheck
     public ResponseEntity<?> putBoard(@Valid @RequestBody BoardCreationDto boardCreationDto,
                                       @PathVariable(value = "boardId") Integer boardId,
                                       @SessionAttribute(name = "loginMember", required = false) Integer memberId) {
@@ -66,10 +65,6 @@ public class BoardController {
         if (board == null) {
             log.info("board[{}] not exist", boardId);
             return ResponseEntity.badRequest().build();
-        }
-        if (memberId == null) {
-            log.info("not login");
-            return ResponseEntity.status(401).build();
         }
         if (board.getMemberId() != memberId) {
             log.info("member[{}] don't have update permission board[{}]", memberId, boardId);
@@ -81,6 +76,7 @@ public class BoardController {
     }
 
     @DeleteMapping("/{boardId}")
+    @LoginCheck
     public ResponseEntity<?> deleteBoard(@PathVariable(value = "boardId") Integer boardId,
                                          @SessionAttribute(name = "loginMember", required = false) Integer memberId) {
 
@@ -88,10 +84,6 @@ public class BoardController {
         if (board == null) {
             log.info("board[{}] not exist", boardId);
             return ResponseEntity.badRequest().build();
-        }
-        if (memberId == null) {
-            log.info("not login");
-            return ResponseEntity.status(401).build();
         }
         if (board.getMemberId() != memberId) {
             log.info("member[{}] don't have delete permission board[{}]", memberId, boardId);
@@ -103,13 +95,11 @@ public class BoardController {
     }
 
     @PostMapping("/{boardId}/thumbsup")
+    @LoginCheck
     public ResponseEntity<?> postThumbsup(@PathVariable(value = "boardId") Integer boardId,
                                           @SessionAttribute(name = "loginMember", required = false) Integer memberId) {
 
-        if (memberId == null) {
-            log.info("not login");
-            return ResponseEntity.status(401).build();
-        } else if (boardService.findById(boardId) == null) {
+        if (boardService.findById(boardId) == null) {
             log.info("board[{}] not exist", boardId);
             return ResponseEntity.status(400).build();
         }

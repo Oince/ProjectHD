@@ -3,6 +3,7 @@ package oince.projecthd.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import oince.projecthd.controller.annotation.LoginCheck;
 import oince.projecthd.controller.dto.CommentCreationDto;
 import oince.projecthd.controller.dto.CommentDto;
 import oince.projecthd.domain.Comment;
@@ -39,12 +40,9 @@ public class CommentController {
     }
 
     @PostMapping
+    @LoginCheck
     public ResponseEntity<?> postComments(@Valid @RequestBody CommentCreationDto commentCreationDto,
                                           @SessionAttribute(name = "loginMember", required = false) Integer memberId) {
-
-        if (memberId == null) {
-            return ResponseEntity.status(401).build();
-        }
 
         int code = commentService.addComment(commentCreationDto, memberId);
 
@@ -57,12 +55,9 @@ public class CommentController {
     }
 
     @DeleteMapping("/{commentId}")
+    @LoginCheck
     public ResponseEntity<?> deleteComment(@PathVariable(value = "commentId") Integer commentId,
                                            @SessionAttribute(name = "loginMember", required = false) Integer memberId) {
-
-        if (memberId == null) {
-            return ResponseEntity.status(401).build();
-        }
 
         int code = commentService.deleteComment(memberId, commentId);
 
