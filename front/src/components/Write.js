@@ -22,6 +22,7 @@ function Write() {
   const [deliveryPrice, setDeliveryPrice] = useState('');
   const [content, setContent] = useState('');
   const [file, setFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null); // 이미지 미리 보기 상태 추가
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
@@ -43,7 +44,15 @@ function Write() {
   };
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+
+    // 이미지 미리 보기 URL 생성
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result);
+      reader.readAsDataURL(selectedFile);
+    }
   };
 
   const uploadFile = async (boardId) => {
@@ -73,7 +82,6 @@ function Write() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 서버로 전송할 데이터
     const postData = {
       category: activeCategory,
       title,
@@ -93,15 +101,13 @@ function Write() {
         setMessage('글 작성이 완료되었습니다!');
 
         const postUrl = response.headers.location;
-        const postId = postUrl.split('/').pop(); // 게시글 ID 추출
+        const postId = postUrl.split('/').pop();
 
-        // 이미지 파일이 있을 경우 업로드
         if (file) {
           const success = await uploadFile(postId);
-          if (!success) return; // 파일 업로드 실패 시 중단
+          if (!success) return;
         }
 
-        // 작성 완료 후 상세 페이지로 이동
         navigate(`/boards/${postId}`);
       }
     } catch (error) {
@@ -170,11 +176,19 @@ function Write() {
             value={content}
             onChange={(e) => setContent(e.target.value)}
           ></TextArea>
-          <Input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
+          {/* 이미지 파일 업로드 */}
+          <Input type="file" accept="image/*" onChange={handleFileChange} />
+          {/* 이미지 미리 보기 */}
+          {imagePreview && (
+            <div style={{ margin: '10px 0' }}>
+              <p>이미지 미리 보기:</p>
+              <img
+                src={imagePreview}
+                alt="미리 보기"
+                style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }}
+              />
+            </div>
+          )}
           <SubmitButton type="submit">작성</SubmitButton>
           {message && <Message>{message}</Message>}
         </Form>
