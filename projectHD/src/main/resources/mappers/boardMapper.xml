@@ -11,8 +11,8 @@
         select * from board where board_id=#{boardId}
     </select>
 
-    <select id="findAll" resultType="oince.projecthd.domain.Board">
-        select * from board
+    <select id="findBoards" resultType="oince.projecthd.domain.Board">
+        select * from board order by board_id desc limit 20 offset #{offset}
     </select>
 
     <update id="increaseViews">

@@ -39,8 +39,10 @@ public class BoardController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BoardHomeDto>> getBoards() {
-        List<BoardHomeDto> boards = boardService.getBoards();
+    public ResponseEntity<List<BoardHomeDto>> getBoards(@RequestParam(value = "page", required = false, defaultValue = "1") int page) {
+        if(page <= 0)
+            page = 1;
+        List<BoardHomeDto> boards = boardService.getBoards(page);
         return ResponseEntity.ok(boards);
     }
 

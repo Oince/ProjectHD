@@ -12,7 +12,7 @@ public interface BoardMapper {
 
     Board findById(int boardId);
 
-    List<Board> findAll();
+    List<Board> findBoards(int offset);
 
     void increaseViews(int boardId);
 

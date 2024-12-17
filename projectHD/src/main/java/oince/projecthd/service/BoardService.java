@@ -55,12 +55,13 @@ public class BoardService {
         return new BoardDto(board, member.getName(), numberOfComment);
     }
 
-    public List<BoardHomeDto> getBoards() {
-        List<Board> boards = boardMapper.findAll();
+    public List<BoardHomeDto> getBoards(int page) {
+        List<Board> boards = boardMapper.findBoards((page - 1) * 20);
         List<BoardHomeDto> res = new ArrayList<>();
         for (Board board : boards) {
             String name = memberMapper.findById(board.getMemberId()).getName();
-            res.add(new BoardHomeDto(board, name, commentMapper.numberOfComment(board.getBoardId())));
+            int numberOfComment = commentMapper.numberOfComment(board.getBoardId());
+            res.add(new BoardHomeDto(board, name, numberOfComment));
         }
 
         return res;
