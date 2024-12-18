@@ -22,7 +22,6 @@ function Write() {
   const [deliveryPrice, setDeliveryPrice] = useState('');
   const [content, setContent] = useState('');
   const [file, setFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null); // 이미지 미리 보기 상태 추가
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
@@ -46,18 +45,12 @@ function Write() {
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
-
-    // 이미지 미리 보기 URL 생성
-    if (selectedFile) {
-      const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result);
-      reader.readAsDataURL(selectedFile);
-    }
   };
 
-  const uploadFile = async (boardId) => {
+  const uploadFile = async () => {
+    if (!file) return null;
+
     const formData = new FormData();
-    formData.append('boardId', boardId);
     formData.append('file', file);
 
     try {
@@ -70,57 +63,49 @@ function Write() {
 
       if (response.status === 201) {
         console.log('File uploaded successfully:', response.headers.location);
-        return true;
+        return response.headers.location; // 업로드된 파일의 URL 반환
       }
     } catch (error) {
-      if(error.response.status === 400){
-        setMessage('존재하지 않는 게시글이거나 파일이 비어있습니다.');
-      }
-      else if(error.response.status === 401){
-        setMessage('로그인 해주시기 바랍니다.');
-      }
-      else if(error.response.status === 403){
-        setMessage('업로드 권한이 없습니다.');
-      }
-      else{
-        setMessage('파일 업로드에 실패했습니다.');
-      }
-      return false;
+      console.error('File upload error:', error);
+      setMessage('이미지 업로드에 실패했습니다.');
+      return null;
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const postData = {
-      category: activeCategory,
-      title,
-      url,
-      itemName,
-      price,
-      deliveryPrice,
-      content,
-    };
-
     try {
-      const response = await axios.post('https://oince.kro.kr/boards', postData, {
+      let imageTag = '';
+      if (file) {
+        const uploadedImageUrl = await uploadFile();
+        if (uploadedImageUrl) {
+          imageTag = `<img src="${uploadedImageUrl}" alt="Uploaded Image" style="max-width:100%; height:auto; border-radius:8px;" />`;
+        }
+      }
+
+      const postData = {
+        category: activeCategory,
+        title,
+        url,
+        itemName,
+        price,
+        deliveryPrice,
+        content: `${content}\n${imageTag}`.trim(),
+      };
+
+      const response = await axios.post(
+        'https://oince.kro.kr/boards', postData, {
         withCredentials: true,
       });
 
       if (response.status === 201) {
         setMessage('글 작성이 완료되었습니다!');
-
         const postUrl = response.headers.location;
-        const postId = postUrl.split('/').pop();
-
-        if (file) {
-          const success = await uploadFile(postId);
-          if (!success) return;
-        }
-
-        navigate(`/boards/${postId}`);
+        navigate(postUrl);
       }
     } catch (error) {
+      console.error('Write error:', error);
       if (error.response) {
         if (error.response.status === 400) {
           setMessage('요청 데이터가 잘못되었습니다. 입력값을 확인하세요.');
@@ -132,7 +117,6 @@ function Write() {
       } else {
         setMessage('서버와의 연결에 실패했습니다. 다시 시도해주세요.');
       }
-      console.error(error);
     }
   };
 
@@ -188,17 +172,6 @@ function Write() {
           ></TextArea>
           {/* 이미지 파일 업로드 */}
           <Input type="file" accept="image/*" onChange={handleFileChange} />
-          {/* 이미지 미리 보기 */}
-          {imagePreview && (
-            <div style={{ margin: '10px 0' }}>
-              <p>이미지 미리 보기:</p>
-              <img
-                src={imagePreview}
-                alt="미리 보기"
-                style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }}
-              />
-            </div>
-          )}
           <SubmitButton type="submit">작성</SubmitButton>
           {message && <Message>{message}</Message>}
         </Form>
