@@ -71,8 +71,18 @@ function Edit() {
         return true;
       }
     } catch (error) {
-      console.error('File upload error:', error);
-      setMessage('파일 업로드에 실패했습니다.');
+      if(error.response.status === 400){
+        setMessage('존재하지 않는 게시글이거나 파일이 비어있습니다.');
+      }
+      else if(error.response.status === 401){
+        setMessage('로그인 해주시기 바랍니다.');
+      }
+      else if(error.response.status === 403){
+        setMessage('업로드 권한이 없습니다.');
+      }
+      else{
+        setMessage('파일 업로드에 실패했습니다.');
+      }
       return false;
     }
   };
