@@ -24,6 +24,7 @@ function PostDetail() {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [error, setError] = useState(null);
+  const [processedContent, setProcessedContent] = useState('');
 
   //게시글 입력 상태, 댓글 상태 리턴
   useEffect(() => {
@@ -259,8 +260,6 @@ function PostDetail() {
 
     return { __html: finalContent }; // 최종적으로 변환된 HTML 반환
   };
-
-  const [processedContent, setProcessedContent] = useState('');
 
   useEffect(() => {
     if (post) {
