@@ -11,8 +11,5 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class FileDto {
 
-    @NotNull
-    private Integer boardId;
-
     private MultipartFile file;
 }

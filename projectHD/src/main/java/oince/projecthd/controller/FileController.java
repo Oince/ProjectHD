@@ -31,7 +31,6 @@ import java.nio.charset.StandardCharsets;
 public class FileController {
 
     private final FileService fileService;
-    private final BoardService boardService;
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> notFoundEx(NotFoundException e, HttpServletRequest request) {
@@ -58,18 +57,8 @@ public class FileController {
     public ResponseEntity<?> postFile(@ModelAttribute @Valid FileDto fileDto,
                                       @SessionAttribute(name = "loginMember", required = false) Integer memberId) {
 
-        Integer boardId = fileDto.getBoardId();
         MultipartFile file = fileDto.getFile();
 
-        Board board = boardService.findById(boardId);
-        if(board == null) {
-            log.info("not exist board[{}]", boardId);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        if (board.getMemberId() != memberId) {
-            log.info("member[{}] don't have upload permission to board[{}]", memberId, boardId);
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
         if (file.isEmpty()) {
             log.info("file is empty");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
