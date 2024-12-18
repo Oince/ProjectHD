@@ -103,12 +103,14 @@ const Tabs = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(`https://oince.kro.kr/boards?page=${currentPage}`);
+        const response = await axios.get(
+          `https://oince.kro.kr/boards?page=${currentPage}&category=${activeCategory}`
+        );
         if (response.status === 200) {
           const postsData = response.data;
           setPosts(postsData);
 
-          // 계산된 totalPages 값 설정 (임의로 100개 게시글을 가정)
+          // 페이지 수 계산: 예시로 100개 게시글을 가정하여 계산
           const totalPosts = 100;
           const pages = Math.ceil(totalPosts / 20);
           setTotalPages(pages);
@@ -118,11 +120,14 @@ const Tabs = () => {
       }
     };
 
-    fetchPosts();
-  }, [currentPage]);
+    if (activeCategory) {
+      fetchPosts();
+    }
+  }, [currentPage, activeCategory]);
 
   const handleCategoryClick = (category) => {
     setActiveCategory(category === activeCategory ? '' : category);
+    setCurrentPage(1); // 카테고리 변경 시 첫 번째 페이지부터 불러오기
   };
 
   const handlePostClick = (postId) => {
