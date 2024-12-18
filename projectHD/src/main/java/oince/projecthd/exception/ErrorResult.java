@@ -1,15 +1,15 @@
 package oince.projecthd.exception;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ErrorResult {
-    private String method;
-    private String url;
-    private Integer code;
     private String message;
 }

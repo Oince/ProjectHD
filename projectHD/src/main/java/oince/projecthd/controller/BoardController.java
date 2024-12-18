@@ -8,10 +8,9 @@ import oince.projecthd.controller.dto.BoardCreationDto;
 import oince.projecthd.controller.dto.BoardDto;
 import oince.projecthd.controller.dto.BoardHomeDto;
 import oince.projecthd.domain.Board;
-import oince.projecthd.domain.Member;
+import oince.projecthd.exception.NotFoundException;
+import oince.projecthd.exception.PermissionException;
 import oince.projecthd.service.BoardService;
-import oince.projecthd.service.MemberService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +41,7 @@ public class BoardController {
     public ResponseEntity<List<BoardHomeDto>> getBoards(@RequestParam(value = "page", required = false, defaultValue = "1") int page) {
         if(page <= 0)
             page = 1;
+
         List<BoardHomeDto> boards = boardService.getBoards(page);
         return ResponseEntity.ok(boards);
     }
@@ -49,12 +49,7 @@ public class BoardController {
     @GetMapping("/{boardId}")
     public ResponseEntity<BoardDto> getBoard(@PathVariable(value = "boardId") int boardId) {
 
-        BoardDto res = boardService.getBoard(boardId);
-        if (res == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(res);
+        return ResponseEntity.ok(boardService.getBoard(boardId));
     }
 
     @PutMapping("/{boardId}")
@@ -65,12 +60,11 @@ public class BoardController {
 
         Board board = boardService.findById(boardId);
         if (board == null) {
-            log.info("board[{}] not exist", boardId);
-            return ResponseEntity.badRequest().build();
+            throw new NotFoundException("존재하지 않는 게시글입니다.");
         }
         if (board.getMemberId() != memberId) {
             log.info("member[{}] don't have update permission board[{}]", memberId, boardId);
-            return ResponseEntity.status(403).build();
+            throw new PermissionException("수정 권한이 없습니다.");
         }
 
         boardService.updateBoard(boardCreationDto, boardId);
@@ -85,11 +79,11 @@ public class BoardController {
         Board board = boardService.findById(boardId);
         if (board == null) {
             log.info("board[{}] not exist", boardId);
-            return ResponseEntity.badRequest().build();
+            throw new NotFoundException("존재하지 않는 게시글입니다.");
         }
         if (board.getMemberId() != memberId) {
             log.info("member[{}] don't have delete permission board[{}]", memberId, boardId);
-            return ResponseEntity.status(403).build();
+            throw new PermissionException("삭제 권한이 없습니다.");
         }
 
         boardService.deleteBoard(boardId);
@@ -103,15 +97,11 @@ public class BoardController {
 
         if (boardService.findById(boardId) == null) {
             log.info("board[{}] not exist", boardId);
-            return ResponseEntity.status(400).build();
+            throw new NotFoundException("존재하지 않는 게시글입니다.");
         }
 
-        int code = boardService.thumbsUp(boardId, memberId);
+        boardService.thumbsUp(boardId, memberId);
 
-        if (code == 400) {
-            return ResponseEntity.status(400).build();
-        } else {
-            return ResponseEntity.ok().build();
-        }
+        return ResponseEntity.ok().build();
     }
 }

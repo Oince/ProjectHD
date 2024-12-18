@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oince.projecthd.controller.dto.SignupDto;
 import oince.projecthd.domain.Member;
+import oince.projecthd.exception.DuplicateMemberException;
+import oince.projecthd.exception.NotLoginException;
 import oince.projecthd.mapper.MemberMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,27 +19,25 @@ public class MemberService {
     private final MemberMapper memberMapper;
 
     @Transactional
-    public String signup(SignupDto signupDto) {
+    public void signup(SignupDto signupDto) {
 
         Member newMember = new Member(null, signupDto.getLoginId(), signupDto.getPassword(), signupDto.getName());
 
         Member findMember = memberMapper.findByLoginId(newMember.getLoginId());
         if (findMember != null) {
             log.info("loginId[{}] duplicate", newMember.getLoginId());
-            return "duplicate";
+            throw new DuplicateMemberException("중복된 아이디입니다.");
         }
 
         memberMapper.addNewMember(newMember);
         log.info("member[{}] created", newMember);
-
-        return "ok";
     }
 
     public Member login(String loginId, String password) {
         Member member = memberMapper.findByLoginId(loginId);
         if (member == null || !member.getPassword().equals(password)) {
             log.info("member[{}] login fail", loginId);
-            return null;
+            throw new NotLoginException("로그인에 실패했습니다.");
         }
 
         log.info("member[{}] login", member.getMemberId());

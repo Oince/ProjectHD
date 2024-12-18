@@ -4,19 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oince.projecthd.domain.UploadFile;
 import oince.projecthd.exception.NotFoundException;
+import oince.projecthd.exception.OutOfBoundException;
 import oince.projecthd.mapper.UploadFileMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.UriUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 @Slf4j
@@ -34,7 +30,7 @@ public class FileService {
 
         UploadFile uploadFile = uploadFileMapper.selectFile(fileName);
         if (uploadFile == null) {
-            throw new NotFoundException("not exist file");
+            throw new NotFoundException("존재하지 않는 파일입니다.");
         }
         return uploadFile;
     }
@@ -44,6 +40,10 @@ public class FileService {
 
         String originalFilename = file.getOriginalFilename();
         String storeFileName = generateStoreFileName(originalFilename);
+        if (originalFilename.length() > 50) {
+            throw new OutOfBoundException("파일 이름은 50자 이하여야 합니다.");
+        }
+
         try {
             file.transferTo(new File(fileDir + storeFileName));
         } catch (IOException e) {
@@ -57,7 +57,7 @@ public class FileService {
         return uploadFile;
     }
 
-    public String getFullPth(String path) {
+    public String getFullPath(String path) {
         return fileDir + path;
     }
 

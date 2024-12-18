@@ -9,6 +9,8 @@ import oince.projecthd.domain.Board;
 import oince.projecthd.domain.Comment;
 import oince.projecthd.domain.Member;
 import oince.projecthd.domain.ThumbsupTable;
+import oince.projecthd.exception.AlreadyThumbupException;
+import oince.projecthd.exception.NotFoundException;
 import oince.projecthd.mapper.BoardMapper;
 import oince.projecthd.mapper.CommentMapper;
 import oince.projecthd.mapper.MemberMapper;
@@ -47,7 +49,7 @@ public class BoardService {
         Board board = boardMapper.findById(boardId);
         if (board == null) {
             log.info("board[{}] not exist", boardId);
-            return null;
+            throw new NotFoundException("존재하지 않는 게시글입니다.");
         }
         Member member = memberMapper.findById(board.getMemberId());
 
@@ -90,18 +92,17 @@ public class BoardService {
     }
 
     @Transactional
-    public int thumbsUp(int boardId, int memberId) {
+    public void thumbsUp(int boardId, int memberId) {
         ThumbsupTable byId = thumpsupTableMapper.findById(boardId, memberId);
         if (byId != null) {
             log.info("member[{}] already thumbsup board[{}]", memberId, boardId);
-            return 400;
+            throw new AlreadyThumbupException("이미 좋아요를 누른 게시글입니다.");
         }
 
         boardMapper.increaseThumbsup(boardId);
         ThumbsupTable thumbsupTable = new ThumbsupTable(boardId, memberId);
         thumpsupTableMapper.addNewThumbsup(thumbsupTable);
         log.info("member[{}] completed thumbsup board[{}]", memberId, boardId);
-        return 200;
     }
 
     public Board findById(int boardId) {

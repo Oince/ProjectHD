@@ -23,7 +23,6 @@ public class CommentController {
 
     private final CommentService commentService;
     
-
     @GetMapping
     public ResponseEntity<List<CommentDto>> getComments(@RequestParam int boardId) {
         List<CommentDto> comments = commentService.getComments(boardId);
@@ -33,9 +32,6 @@ public class CommentController {
     @GetMapping("/{commentId}")
     public ResponseEntity<CommentDto> getComment(@PathVariable(value = "commentId") int commentId) {
         CommentDto comment = commentService.getComment(commentId);
-        if (comment == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
         return ResponseEntity.ok(comment);
     }
 
@@ -44,14 +40,8 @@ public class CommentController {
     public ResponseEntity<?> postComments(@Valid @RequestBody CommentCreationDto commentCreationDto,
                                           @SessionAttribute(name = "loginMember", required = false) Integer memberId) {
 
-        int code = commentService.addComment(commentCreationDto, memberId);
-
-        if (code == 400) {
-            return ResponseEntity.status(400).build();
-        }
-        else {
-            return ResponseEntity.created(URI.create("/comments/" + code)).build();
-        }
+        int commentId = commentService.addComment(commentCreationDto, memberId);
+        return ResponseEntity.created(URI.create("/comments/" + commentId)).build();
     }
 
     @DeleteMapping("/{commentId}")
@@ -59,14 +49,8 @@ public class CommentController {
     public ResponseEntity<?> deleteComment(@PathVariable(value = "commentId") Integer commentId,
                                            @SessionAttribute(name = "loginMember", required = false) Integer memberId) {
 
-        int code = commentService.deleteComment(memberId, commentId);
+        commentService.deleteComment(memberId, commentId);
 
-        if (code == 400) {
-            return ResponseEntity.badRequest().build();
-        } else if (code == 403) {
-            return ResponseEntity.status(403).build();
-        } else {
-            return ResponseEntity.ok().build();
-        }
+        return ResponseEntity.ok().build();
     }
 }

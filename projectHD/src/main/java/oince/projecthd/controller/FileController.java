@@ -1,16 +1,11 @@
 package oince.projecthd.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oince.projecthd.controller.annotation.LoginCheck;
 import oince.projecthd.controller.dto.FileDto;
-import oince.projecthd.domain.Board;
 import oince.projecthd.domain.UploadFile;
-import oince.projecthd.exception.ErrorResult;
-import oince.projecthd.exception.NotFoundException;
-import oince.projecthd.service.BoardService;
 import oince.projecthd.service.FileService;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -32,18 +27,10 @@ public class FileController {
 
     private final FileService fileService;
 
-    @ExceptionHandler
-    public ResponseEntity<ErrorResult> notFoundEx(NotFoundException e, HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        String method = request.getMethod();
-        ErrorResult errorResult = new ErrorResult(method, requestURI, 404, e.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResult);
-    }
-
     @GetMapping("/files/{fileName}")
     public ResponseEntity<Resource> getFile(@PathVariable String fileName) throws MalformedURLException {
         UploadFile file = fileService.getFile(fileName);
-        String path = fileService.getFullPth(file.getStoreFileName());
+        String path = fileService.getFullPath(file.getStoreFileName());
         UrlResource resource = new UrlResource("file:" + path);
 
         String encode = UriUtils.encode(file.getUploadFileName(), StandardCharsets.UTF_8);

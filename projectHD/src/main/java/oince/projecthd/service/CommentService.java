@@ -7,6 +7,8 @@ import oince.projecthd.controller.dto.CommentDto;
 import oince.projecthd.domain.Comment;
 import oince.projecthd.domain.Member;
 import oince.projecthd.exception.NotFoundException;
+import oince.projecthd.exception.ParentCommentException;
+import oince.projecthd.exception.PermissionException;
 import oince.projecthd.mapper.CommentMapper;
 import oince.projecthd.mapper.MemberMapper;
 import org.springframework.stereotype.Service;
@@ -40,7 +42,7 @@ public class CommentService {
         Comment comment = new Comment(commentCreationDto, memberId);
         if (comment.getParentComment() != null && commentMapper.findById(comment.getParentComment()) == null) {
             log.info("parentComment[{}] not exist", comment.getCommentId());
-            return 400;
+            throw new ParentCommentException("parentComment: " + comment.getParentComment() + "이 존재하지 않습니다.");
         }
 
         commentMapper.addNewComment(comment);
@@ -49,26 +51,25 @@ public class CommentService {
     }
 
     @Transactional
-    public int deleteComment(int memberId, int commentId) {
+    public void deleteComment(int memberId, int commentId) {
         Comment comment = commentMapper.findById(commentId);
         if (comment == null) {
             log.info("comment[{}] not exist", commentId);
-            return 400;
+            throw new NotFoundException("존재하지 않는 댓글입니다.");
         }
         if (comment.getMemberId() != memberId) {
             log.info("member[{}] don't have permission to comment[{}]", memberId, commentId);
-            return 403;
+            throw new PermissionException("삭제 권한이 없습니다.");
         }
 
-        log.info("comment[{}] deleted", commentId);
         commentMapper.deleteComment(commentId);
-        return 200;
+        log.info("comment[{}] deleted", commentId);
     }
 
     public CommentDto getComment(int commentId) {
         Comment comment = commentMapper.findById(commentId);
         if (comment == null) {
-            return null;
+            throw new NotFoundException("존재하지 않는 댓글입니다.");
         }
         String name = memberMapper.findById(comment.getMemberId()).getName();
         return new CommentDto(comment, name);
