@@ -58,44 +58,79 @@ const PostDetails = styled.div`
   margin-top: 5px;
 `;
 
+const Pagination = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+`;
+
+const PageButton = styled.button`
+  background-color: ${({ active }) => (active ? '#f85f6a' : '#f0f0f0')};
+  color: ${({ active }) => (active ? '#fff' : '#333')};
+  border: none;
+  border-radius: 20px;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  &:hover {
+    background-color: ${({ active }) => (active ? '#e04b56' : '#ddd')};
+  }
+`;
+
 const Tabs = () => {
   const [activeCategory, setActiveCategory] = useState('');
-  const [postsByCategory, setPostsByCategory] = useState({});
   const [posts, setPosts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('https://oince.kro.kr/boards');
+        if (response.status === 200) {
+          const uniqueCategories = [...new Set(response.data.map(post => post.category))];
+          setCategories(uniqueCategories);
+        }
+      } catch (error) {
+        console.error('카테고리 불러오기 실패:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('https://oince.kro.kr/boards');
+        const response = await axios.get(`https://oince.kro.kr/boards?page=${currentPage}`);
         if (response.status === 200) {
-          const groupedPosts = response.data.reduce((acc, post) => {
-            if (!acc[post.category]) {
-              acc[post.category] = [];
-            }
-            acc[post.category].push(post);
-            return acc;
-          }, {});
-          setPostsByCategory(groupedPosts);
-          setPosts(groupedPosts[activeCategory] || Object.values(groupedPosts).flat());
+          const postsData = response.data;
+          setPosts(postsData);
+
+          // 계산된 totalPages 값 설정 (임의로 100개 게시글을 가정)
+          const totalPosts = 100;
+          const pages = Math.ceil(totalPosts / 20);
+          setTotalPages(pages);
         }
       } catch (error) {
-        console.error('게시글을 불러오는데 실패했습니다:', error);
+        console.error('게시글 불러오기 실패:', error);
       }
     };
 
     fetchPosts();
-  }, [activeCategory]);
-
-  const categories = Object.keys(postsByCategory);
+  }, [currentPage]);
 
   const handleCategoryClick = (category) => {
     setActiveCategory(category === activeCategory ? '' : category);
-    setPosts(category === activeCategory ? Object.values(postsByCategory).flat() : postsByCategory[category]);
   };
 
   const handlePostClick = (postId) => {
-    navigate(`/boards/${postId}`);  // 상세화면으로 이동
+    navigate(`/boards/${postId}`);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -124,6 +159,18 @@ const Tabs = () => {
           </PostItem>
         ))}
       </PostList>
+
+      <Pagination>
+        {[...Array(totalPages)].map((_, index) => (
+          <PageButton
+            key={index + 1}
+            active={index + 1 === currentPage}
+            onClick={() => handlePageChange(index + 1)}
+          >
+            {index + 1}
+          </PageButton>
+        ))}
+      </Pagination>
     </Container>
   );
 };
