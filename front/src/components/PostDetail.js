@@ -216,7 +216,59 @@ function PostDetail() {
     }
   };
 
+  const fetchImage = async (fileName) => {
+    try {
+      const response = await axios.get(`https://oince.kro.kr/files${fileName}`, {
+        responseType: 'blob', // 이미지 파일 데이터를 받기 위해 blob 설정
+      });
+      return URL.createObjectURL(response.data); // 로컬 Blob URL 생성
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        console.warn(`파일을 찾을 수 없습니다: ${fileName}`);
+        return null; // 파일이 없으면 null 반환
+      }
+      console.error('이미지 로드 오류:', error);
+      return null;
+    }
+  };
 
+  const renderContentWithImages = async (content) => {
+
+    // 콘텐츠 내 <img> 태그를 찾아서 처리
+    const imagePromises = [];
+    const processedContent = content.replace(
+      /<img src="([^"]+)" alt="[^"]*"[^>]*>/g,
+      (match, fileName) => {
+        const promise = fetchImage(fileName).then((url) => ({
+          original: match,
+          replacement: url
+            ? `<img src="${url}" alt="Uploaded Image" style="max-width:100%; height:auto; border-radius:8px;" />`
+            : '',
+        }));
+        imagePromises.push(promise);
+        return match; // Placeholder, 실제 치환은 Promise에서 처리
+      }
+    );
+
+    const replacements = await Promise.all(imagePromises);
+    let finalContent = processedContent;
+
+    replacements.forEach(({ original, replacement }) => {
+      finalContent = finalContent.replace(original, replacement);
+    });
+
+    return { __html: finalContent }; // 최종적으로 변환된 HTML 반환
+  };
+
+  const [processedContent, setProcessedContent] = useState('');
+
+  useEffect(() => {
+    if (post) {
+      renderContentWithImages(post.content).then((result) => {
+        setProcessedContent(result.__html);
+      });
+    }
+  }, [post]);
 
   if (error) {
     return <PostContainer>{error}</PostContainer>;
@@ -244,8 +296,7 @@ function PostDetail() {
       <Info><strong>조회수:</strong> {post.views}</Info>
       <Info><strong>URL:</strong> <UrlLink href={post.url} target="_blank" rel="noopener noreferrer">{post.url}</UrlLink></Info>
       <Content>
-        <strong>내용:</strong>
-        <p>{post.content}</p>
+        <div dangerouslySetInnerHTML={{ __html: processedContent }} />
       </Content>
 
       {/* Thumbsup Button */}

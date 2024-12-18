@@ -62,7 +62,6 @@ function Write() {
       });
 
       if (response.status === 201) {
-        console.log('File uploaded successfully:', response.headers.location);
         return response.headers.location; // 업로드된 파일의 URL 반환
       }
     } catch (error) {
