@@ -29,7 +29,7 @@ function Edit() {
   const [message, setMessage] = useState('');
 
   const categories = [
-    'FOOD', 'SW', 'PC', 'ELECTRONIC', 'CLOTHES',
+    'FOOD', 'SW', 'PC', 'ELECTRONIC', 'CLTHES',
     'SALES', 'BEAUTY', 'MOBILE', 'PACKAGE', 'ETC',
   ];
 
@@ -38,14 +38,30 @@ function Edit() {
     setPost({ ...post, category });
   };
 
-  // 이미지 파일 선택 이벤트 핸들러
-  const handleFileChange = (e) => {
+  // 이미지 파일 선택 이벤트 핸들러 (업로드를 파일 선택 시 바로 호출)
+  const handleFileChange = async (e) => {
     const selectedFile = e.target.files[0];
-    setFile(selectedFile);
+    if (selectedFile) {
+      setFile(selectedFile);
+
+      try {
+        const uploadedImageUrl = await uploadFile(selectedFile);
+        if (uploadedImageUrl) {
+          const imageTag = `<img src="${uploadedImageUrl}" alt="Uploaded Image" style="max-width:100%; height:auto; border-radius:8px;" />`;
+          setPost((prevPost) => ({
+            ...prevPost,
+            content: `${prevPost.content}\n${imageTag}`.trim(),
+          }));
+        }
+      } catch (error) {
+        console.error('File upload error:', error);
+        setMessage('이미지 업로드에 실패했습니다.');
+      }
+    }
   };
 
   // 이미지 업로드
-  const uploadFile = async () => {
+  const uploadFile = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -58,13 +74,20 @@ function Edit() {
       });
 
       if (response.status === 201) {
-        //console.log('File uploaded successfully:', response.headers.location);
+        //console.log("Success");
         return response.headers.location; // 업로드된 파일의 URL 반환
-      }
+      } 
     } catch (error) {
-      console.error('File upload error:', error);
-      setMessage('이미지 업로드에 실패했습니다.');
-      return null;
+      if(error.response.status === 400){
+        setMessage("게시글이 존재하지 않거나, 빈 파일을 업로드하셨습니다.");
+      } else if(error.response.status === 401){
+        setMessage("로그인 해주세요");
+      } else if(error.response.status === 403){
+        setMessage("권한이 없습니다.");
+      }
+      else {
+        setMessage("이미지 업로드에 실패했습니다.");
+      }
     }
   };
 
@@ -73,25 +96,10 @@ function Edit() {
     e.preventDefault();
 
     try {
-      // 이미지 파일 업로드 후 URL 생성
-      let imageTag = '';
-      if (file) {
-        const uploadedImageUrl = await uploadFile();
-        if (uploadedImageUrl) {
-          imageTag = `<img src="${uploadedImageUrl}" alt="Uploaded Image" style="max-width:100%; height:auto; border-radius:8px;" />`;
-        }
-      }
-
-      // 이미지 태그를 본문에 추가
-      const updatedPost = {
-        ...post,
-        content: `${post.content}\n${imageTag}`.trim(),
-      };
-
       // 게시글 데이터 수정
       const response = await axios.put(
         `https://oince.kro.kr/boards/${post.boardId}`,
-        updatedPost,
+        post,
         { withCredentials: true }
       );
 
@@ -100,16 +108,13 @@ function Edit() {
         navigate(`/boards/${post.boardId}`);
       }
     } catch (error) {
-      if(error.response.status === 400){
+      if (error.response.status === 400) {
         setMessage('없는 게시글 이거나 빈 파일 입니다.');
-      }
-      else if(error.response.status === 401){
+      } else if (error.response.status === 401) {
         setMessage('로그인 해주시기 바랍니다.');
-      }
-      else if(error.response.status === 403){
+      } else if (error.response.status === 403) {
         setMessage('수정권한이 없습니다.');
-      }
-      else{
+      } else {
         setMessage('수정 실패. 다시 시도해주세요.');
       }
       console.error('Edit error:', error);

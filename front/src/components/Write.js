@@ -42,14 +42,27 @@ function Write() {
     setActiveCategory(category);
   };
 
-  const handleFileChange = (e) => {
+  // 이미지 파일 선택 시 업로드 및 콘텐츠에 추가
+  const handleFileChange = async (e) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
+
+    if (selectedFile) {
+      try {
+        const uploadedImageUrl = await uploadFile(selectedFile);
+        if (uploadedImageUrl) {
+          const imageTag = `<img src="${uploadedImageUrl}" alt="Uploaded Image" style="max-width:100%; height:auto; border-radius:8px;" />`;
+          setContent((prevContent) => `${prevContent}\n${imageTag}`); // 이미지 태그를 콘텐츠에 추가
+        }
+      } catch (error) {
+        console.error('File upload error:', error);
+        setMessage('이미지 업로드에 실패했습니다.');
+      }
+    }
   };
 
-  const uploadFile = async () => {
-    if (!file) return null;
-
+  // 파일 업로드 함수
+  const uploadFile = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -75,14 +88,6 @@ function Write() {
     e.preventDefault();
 
     try {
-      let imageTag = '';
-      if (file) {
-        const uploadedImageUrl = await uploadFile();
-        if (uploadedImageUrl) {
-          imageTag = `<img src="${uploadedImageUrl}" alt="Uploaded Image" style="max-width:100%; height:auto; border-radius:8px;" />`;
-        }
-      }
-
       const postData = {
         category: activeCategory,
         title,
@@ -90,7 +95,7 @@ function Write() {
         itemName,
         price,
         deliveryPrice,
-        content: `${content}\n${imageTag}`.trim(),
+        content,
       };
 
       const response = await axios.post(
@@ -101,7 +106,7 @@ function Write() {
       if (response.status === 201) {
         setMessage('글 작성이 완료되었습니다!');
         const postUrl = response.headers.location;
-        navigate(postUrl);
+        navigate(postUrl); // 작성된 게시글의 URL로 리다이렉트
       }
     } catch (error) {
       console.error('Write error:', error);
