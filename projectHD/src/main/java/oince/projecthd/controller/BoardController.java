@@ -8,6 +8,7 @@ import oince.projecthd.controller.dto.BoardCreationDto;
 import oince.projecthd.controller.dto.BoardDto;
 import oince.projecthd.controller.dto.BoardHomeDto;
 import oince.projecthd.domain.Board;
+import oince.projecthd.domain.CategoryName;
 import oince.projecthd.exception.NotFoundException;
 import oince.projecthd.exception.PermissionException;
 import oince.projecthd.service.BoardService;
@@ -38,11 +39,17 @@ public class BoardController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BoardHomeDto>> getBoards(@RequestParam(value = "page", required = false, defaultValue = "1") int page) {
-        if(page <= 0)
+    public ResponseEntity<List<BoardHomeDto>> getBoards(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                                        @RequestParam(value = "category", required = false) CategoryName categoryName) {
+
+        if (page <= 0)
             page = 1;
 
-        List<BoardHomeDto> boards = boardService.getBoards(page);
+        List<BoardHomeDto> boards;
+        if (categoryName == null)
+            boards = boardService.getBoards(page);
+        else
+            boards = boardService.getBoards(page, categoryName);
         return ResponseEntity.ok(boards);
     }
 

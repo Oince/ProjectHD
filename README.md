@@ -8,50 +8,39 @@
 
 - 24/12/18
   - /files 에서 boardId 요구하지 않도록 변경
-
 - 24/12/17
   - 페이지 기능 추가
-
 - 24/12/12 
   - 이미지 업로드&다운로드 api 추가
-
 - 24/12/10
   - 글과 댓글 목록 GET할 때 작성자의 이름도 같이 넘겨주는거로 변경
   - GET  /nickname 삭제
-
 - 24/11/15
   - GET /comments -> GET /comment?boardId= 로 변경
   - GET /comments/{commentId} 추가
   - POST /comments 응답 데이터에 Location 추가하고 응답 코드 201로 변경
   - GET /nickname/{memberId} -> GET /nickname?memberId=?로 변경
   - 로그인시 memberId 값을 전달하도록 변경
-
 - 24/11/08
   - POST /thumbsup -> POST /boards/{boardId}/thumbsup 으로 이름 변경
-
 - 24/10/31
   - GET /comments 에서 응답 데이터중 wirter 삭제
   - POST /comments 성공시 응답코드 201->200으로 변경
-
 - 24/10/17
   - GET /nickname/{memberId} 추가
   - GET /boards, GET /board{boardId} 에서 writer 항목 삭제
-
 - 24/10/11
   - 요청 데이터 제약사항 추가
   - api 응답 코드 추가
   - /login에서 memberId 쿠키 안보내도록 수정
   - /board -> /boards, /comment -> /comments 로 수정
     - 그냥 복수로 바꿨다는 뜻
-
 - 24/10/07
   - 화면 구성 추가
     - /edit/{boardId}, /signup
-
 - 24/10/05
   - POST /logout api 추가
   - /signup, /login 요청 데이터 제약사항 추가
-
 - 24/10/01 최초 작성
 
 
@@ -141,7 +130,7 @@
   - 세션이 없으면 400 리턴
 
 
-### GET /boards?page=
+### GET /boards?page=&category=
 
 홈화면에 표시할 게시글 정보, 페이지 번호 쿼리 스트링으로 지정
 

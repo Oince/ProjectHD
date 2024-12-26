@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import oince.projecthd.controller.dto.BoardCreationDto;
 import oince.projecthd.controller.dto.BoardDto;
 import oince.projecthd.controller.dto.BoardHomeDto;
-import oince.projecthd.domain.Board;
-import oince.projecthd.domain.Comment;
-import oince.projecthd.domain.Member;
-import oince.projecthd.domain.ThumbsupTable;
+import oince.projecthd.domain.*;
 import oince.projecthd.exception.AlreadyThumbupException;
 import oince.projecthd.exception.NotFoundException;
 import oince.projecthd.mapper.BoardMapper;
@@ -68,6 +65,19 @@ public class BoardService {
 
         return res;
     }
+
+    public List<BoardHomeDto> getBoards(int page, CategoryName categoryName) {
+        List<Board> boards = boardMapper.findBoardsByCategory((page - 1) * 20, categoryName.name());
+        List<BoardHomeDto> res = new ArrayList<>();
+        for (Board board : boards) {
+            String name = memberMapper.findById(board.getMemberId()).getName();
+            int numberOfComment = commentMapper.numberOfComment(board.getBoardId());
+            res.add(new BoardHomeDto(board, name, numberOfComment));
+        }
+
+        return res;
+    }
+
 
     @Transactional
     public void updateBoard(BoardCreationDto boardCreationDto, int boardId) {

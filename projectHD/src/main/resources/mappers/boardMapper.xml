@@ -15,6 +15,10 @@
         select * from board order by board_id desc limit 20 offset #{offset}
     </select>
 
+    <select id="findBoardsByCategory" resultType="oince.projecthd.domain.Board">
+        select * from board where category=#{categoryName} order by board_id desc limit 20 offset #{offset}
+    </select>
+
     <update id="increaseViews">
         update board set views=views+1 where board_id=#{boardId}
     </update>

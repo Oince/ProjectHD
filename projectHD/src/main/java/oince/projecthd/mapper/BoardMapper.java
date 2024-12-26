@@ -14,6 +14,8 @@ public interface BoardMapper {
 
     List<Board> findBoards(int offset);
 
+    List<Board> findBoardsByCategory(int offset, String categoryName);
+
     void increaseViews(int boardId);
 
     void increaseThumbsup(int boardId);
